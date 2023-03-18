@@ -28,7 +28,7 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
             <div className="close-icon" onClick={handleClick}>
                 ✕
             </div>
-            <h2>{isSignUp ? "Create account" : "Log in"}</h2>
+            <h2>{isSignUp ? "Create account" : "Get Started"}</h2>
             <p>
                 By clicking Log in, you agree to our Terms. Learn how we process
                 your data in our Privacy Policy and Cookie Policy.

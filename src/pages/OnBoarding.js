@@ -158,7 +158,9 @@ const OnBoarding = () => {
                                 name="gender_interest"
                                 value="everyone"
                                 onChange={handleChange}
-                                checked={formData.gender_interest === "everyone"}
+                                checked={
+                                    formData.gender_interest === "everyone"
+                                }
                             />
                             <label htmlFor="everyone-gender-interest">
                                 Everyone
@@ -196,4 +198,5 @@ const OnBoarding = () => {
         </>
     );
 };
+
 export default OnBoarding;
