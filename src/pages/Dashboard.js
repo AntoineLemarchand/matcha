@@ -1,7 +1,7 @@
 const Dashboard = () => {
     return (
         <div className="dashboard">
-            <ChatContainer />
+            {/*<ChatContainer />*/}
             <div className="swiper-container">
                 <div className="card-container"></div>
             </div>

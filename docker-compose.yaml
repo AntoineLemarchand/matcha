@@ -1,0 +1,15 @@
+version: "3"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    container_name: app
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./src:/app/src"
+      - "./public:/app/public"
+    environment:
+      - NODE_ENV=development
+    command: sh -c "npm start"
