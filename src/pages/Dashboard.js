@@ -1,7 +1,12 @@
 const Dashboard = () => {
     return (
-        <div>Dashboard</div>
-    )
-}
+        <div className="dashboard">
+            <ChatContainer />
+            <div className="swiper-container">
+                <div className="card-container"></div>
+            </div>
+        </div>
+    );
+};
 
-export default Dashboard
+export default Dashboard;
