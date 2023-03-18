@@ -114,7 +114,7 @@ nav .logo-container .logo {
             rgb(0, 0, 0, 0.65) 0%,
             rgb(0, 0, 0, 0) 100%
         ),
-        url("/home/cls/Documents/42/42_workdir/Matcha/matcha/src/images/home_page_bg.webp");
+        url("images/home_page_bg.png");
 }
 
 .home {
@@ -157,4 +157,41 @@ nav .logo-container .logo {
     margin: 8px 0;
     padding: 8px;
     font-size: 17px;
+}
+
+/*---- Onboarding Page ----*/
+
+.onboarding form {
+    display: flex;
+    justify-content: center;
+}
+
+.onboarding form section {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    width: 35%;
+}
+
+.onboarding form input {
+    margin: 10px 0;
+    padding: 15px 30px;
+    font-size: 15px;
+    border: solid 2px rgb(219, 219, 219);
+    border-radius: 10px;
+}
+
+.onboarding form input::-webkit-outer-spin-button,
+.onboarding form input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.onboarding form input .multiple-input-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.onboarding form input .multiple-input-container input {
+    margin-right: 10px;
 }
