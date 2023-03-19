@@ -6,5 +6,5 @@ if [ "$NODE_ENV" = "production" ]; then
     npm run build
     exec serve -s build
 else
-    exec npm start
+    exec npm run start:frontend
 fi
