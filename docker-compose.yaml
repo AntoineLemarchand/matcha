@@ -1,26 +1,33 @@
 version: "3"
 services:
   client:
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: ./client/docker/Dockerfile
     container_name: client
     ports:
-      - "3000:3000"
+      - ${CLIENT_PORT}:${CLIENT_PORT}
     volumes:
       - "./client/src:/app/src"
       - "./client/public:/app/public"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV}
+    depends_on:
+      - server
 
   server:
+    env_file: 
+      - .env
     build:
       context: .
       dockerfile: ./server/docker/Dockerfile
     container_name: server
     ports:
-      - "5000:5000"
+      - ${DB_PORT}:${DB_PORT}
     volumes:
       - "./server/src:/app/src"
+      - "./server/index.js:/app/index.js"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV}
