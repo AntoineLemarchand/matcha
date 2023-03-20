@@ -19,8 +19,8 @@ app.get("/users", async (req, res) => {
 
     try {
         await client.connect();
-        const database = client.db("app-data");
-        const users = database.collection("users");
+        const database = client.db("test");
+        const users = database.collection("user");
 
         const returnedUsers = await users.find().toArray();
         res.send(returnedUsers);
@@ -29,6 +29,6 @@ app.get("/users", async (req, res) => {
     }
 });
 
-app.listen(process.env.DB_PORT, () => {
-    console.log(`Server running on port ${process.env.DB_PORT}`);
+app.listen(process.env.SERVER_PORT, () => {
+    console.log(`Server running on port ${process.env.SERVER_PORT}`);
 });

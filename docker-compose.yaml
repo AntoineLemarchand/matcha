@@ -25,9 +25,25 @@ services:
       dockerfile: ./server/docker/Dockerfile
     container_name: server
     ports:
-      - ${DB_PORT}:${DB_PORT}
+      - ${SERVER_PORT}:${SERVER_PORT}
     volumes:
       - "./server/src:/app/src"
       - "./server/index.js:/app/index.js"
     environment:
       - NODE_ENV=${NODE_ENV}
+    depends_on:
+      - db
+
+  db:
+    env_file: 
+      - .env
+    image: mongo:latest
+    container_name: db
+    restart: always
+    volumes:
+      - "./db:/data/db"
+      - "./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
