@@ -3,14 +3,14 @@ import db from '../db/conn.mjs';
 
 const router = express.Router();
 
-router.get("/", async (res) => {
+router.get("/", async (req, res) => {
   try {
     let collection = db.collection("user");
     let results = await collection.find({}).toArray();
 
     res.send(results);
-  } finally {
-    await client.close();
+  } catch (err) {
+    throw new Error(err);
   }
 });
 
