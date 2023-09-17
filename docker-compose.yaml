@@ -1,4 +1,8 @@
-version: "3"
+version: "3.7"
+
+networks:
+  backend:
+
 services:
   client:
     env_file:
@@ -8,12 +12,9 @@ services:
       dockerfile: ./client/docker/Dockerfile
     container_name: client
     ports:
-      - ${CLIENT_PORT}:${CLIENT_PORT}
+      - ${CLIENT_PORT}:3000
     volumes:
-      - "./client/src:/app/src"
-      - "./client/public:/app/public"
-    environment:
-      - NODE_ENV=${NODE_ENV}
+      - "./client/:/app/"
     depends_on:
       - server
 
@@ -26,11 +27,10 @@ services:
     container_name: server
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
+    networks:
+      - backend
     volumes:
-      - "./server/src:/app/src"
-      - "./server/index.js:/app/index.js"
-    environment:
-      - NODE_ENV=${NODE_ENV}
+      - "./server/:/app/"
     depends_on:
       - db
 
@@ -40,10 +40,8 @@ services:
     image: mongo:latest
     container_name: db
     restart: always
+    networks:
+      - backend
     volumes:
       - "./db:/data/db"
       - "./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
