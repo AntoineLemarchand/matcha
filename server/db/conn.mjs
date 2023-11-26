@@ -1,17 +1,11 @@
-import { MongoClient } from "mongodb";
+import mariadb from 'mariadb';
+const pool = mariadb.createPool({
+    host: 'db',
+    user: process.env.MARIADB_USER,
+    password: process.env.MARIADB_PASSWORD,
+    database: process.env.MARIADB_DATABASE,
+});
 
-const connectionString = process.env.MONGO_URI || "";
-console.log("MongoDB URI:", connectionString);
+const conn = await pool.getConnection();
 
-const client = new MongoClient(connectionString);
-
-let conn;
-try {
-  conn = await client.connect();
-} catch (err) {
-  console.error(err);
-}
-
-let db = conn.db(process.env.MONGO_INITDB_DATABASE || "test");
-
-export default db;
+export default conn;

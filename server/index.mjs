@@ -1,9 +1,6 @@
 import express from "express";
-
 import "./loadEnvironment.mjs"
-
 import users from "./routes/users.mjs"
-
 
 const app = express();
 

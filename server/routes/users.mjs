@@ -1,12 +1,11 @@
 import express from 'express';
-import db from '../db/conn.mjs';
+import conn from '../db/conn.mjs';
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    let collection = db.collection("user");
-    let results = await collection.find({}).toArray();
+    let results = conn.query("SELECT * FROM users");
 
     res.send(results);
   } catch (err) {
