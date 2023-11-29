@@ -27,19 +27,18 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
             })
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error('HTTP error ' + response.status);
+                    if (isSignUp) {
+                        setError("Email already taken");
+                    } else {
+                        setError("Invalid email or password");
+                    }
                 }
                 return response.json();
             })
             .then((data) => {
-                if (data.error) {
-                    setError(data.error);
-                } else {
-                    setError(null);
-                    setShowModal(false);
-                    console.log(data);
-                    // navigate("/onboarding", { state: { user_id: data.user_id, email: data.email } });
-                }
+                setError(null);
+                setShowModal(false);
+                navigate("/onboarding", { state: { user_id: data.user_id, email: data.email } });
             })
             .catch((error) => {
                 console.error('There was an error!', error);
