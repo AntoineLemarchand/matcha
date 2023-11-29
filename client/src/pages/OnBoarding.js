@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import Nav from "../components/Nav";
 
 const OnBoarding = () => {
+    const state = useLocation();
     const [formData, setFormData] = useState({
         user_id: "",
         first_name: "",
@@ -31,8 +33,8 @@ const OnBoarding = () => {
             [name]: value,
         }));
     };
-
-    console.log("formData", formData);
+    
+    console.log("state", state);
     return (
         <>
             <Nav minimal={true} setShowModal={() => {}} showModal={false} />

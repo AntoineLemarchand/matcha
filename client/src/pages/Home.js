@@ -8,7 +8,6 @@ const Home = () => {
     const authToken = false;
 
     const handleClick = () => {
-        console.log("Clicked");
         setShowModal(true);
         setIsSignUp(true);
     };

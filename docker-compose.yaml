@@ -2,19 +2,35 @@ version: "3.7"
 
 networks:
   backend:
+  frontend:
 
 services:
-  client:
+  proxy:
     env_file:
       - .env
     build:
       context: .
+      dockerfile: ./proxy/DockerFile
+    container_name: proxy
+    restart: always
+    ports:
+      - "${SERVER_PORT}:80"
+    networks:
+      - frontend
+  client:
+    env_file:
+      - .env
+    environment:
+      - REACT_APP_API_URL=http://${SERVER_URL}:${SERVER_PORT}/api
+    build:
+      context: .
       dockerfile: ./client/docker/Dockerfile
     container_name: client
-    ports:
-      - ${CLIENT_PORT}:3000
+    networks:
+      - frontend
     volumes:
-      - "./client/:/app/"
+      - ./client/:/app/
+      - /app/node_modules
     depends_on:
       - server
 
@@ -25,12 +41,12 @@ services:
       context: .
       dockerfile: ./server/docker/Dockerfile
     container_name: server
-    ports:
-      - ${SERVER_PORT}:${SERVER_PORT}
     networks:
+      - frontend
       - backend
     volumes:
-      - "./server/:/app/"
+      - ./server/:/app/
+      - /app/node_modules
     depends_on:
       - db
 

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AuthModal = ({ setShowModal, isSignUp }) => {
+    const navigate = useNavigate();
+
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
     const [confirmPassword, setConfirmPassword] = useState(null);
     const [error, setError] = useState(null);
-
-    console.log(email, password, confirmPassword);
 
     const handleClick = () => {
         setShowModal(false);
@@ -17,7 +18,32 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
             if (isSignUp && password !== confirmPassword) {
                 setError("Passwords do not match");
             }
-            console.log("make a post request to our database");
+            fetch(`${process.env.REACT_APP_API_URL}/auth/${isSignUp ? "signup" : "login"}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('HTTP error ' + response.status);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                if (data.error) {
+                    setError(data.error);
+                } else {
+                    setError(null);
+                    setShowModal(false);
+                    console.log(data);
+                    // navigate("/onboarding", { state: { user_id: data.user_id, email: data.email } });
+                }
+            })
+            .catch((error) => {
+                console.error('There was an error!', error);
+            });
         } catch (error) {
             console.log(error);
         }
