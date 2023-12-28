@@ -38,7 +38,7 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
             .then((data) => {
                 setError(null);
                 setShowModal(false);
-                navigate("/onboarding", { state: { user_id: data.user_id, email: data.email } });
+                navigate("/onboarding", { state: { user_id: data.user_id } });
             })
             .catch((error) => {
                 console.error('There was an error!', error);

@@ -1,27 +1,65 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Nav from "../components/Nav";
 
 const OnBoarding = () => {
-    const state = useLocation();
+    const state = useLocation().state;
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        user_id: "",
+        email: "",
         first_name: "",
         last_name: "",
-        dob_day: "",
-        dob_month: "",
-        dob_year: "",
+        date_of_birth: "",
         show_gender: false,
         gender_identity: "man",
         gender_interest: "woman",
-        email: "",
         about: "",
-        url: "",
-        matches: [],
+        image_url: "",
+        matches: JSON.stringify([]),
     });
 
-    const handleSubmit = () => {
-        console.log("submitted");
+    useEffect(() => {
+        try {
+            if (state && state.user_id && formData.email === "") {
+                const dataFetch = async () => {
+                    const res = await fetch(`/api/user/${state.user_id}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        setFormData((prevState) => ({
+                            ...prevState,
+                            user_id: data.id,
+                            email: data.email,
+                        }));
+                    } else {
+                        navigate("/");
+                    }
+                }
+                dataFetch();
+            } else {
+                navigate("/");
+            }
+        } catch (error) {
+            navigate("/");
+        }
+    }, [state, navigate]);
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const dataFetch = async () => {
+            const res = await fetch(`/api/user/${formData.user_id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+        };
+        const data = await dataFetch();
+        if (data.ok) {
+            console.log("error");
+        } else {
+            navigate("/home", { state:  data  });
+        }
     };
     const handleChange = (e) => {
         const value =
@@ -34,7 +72,6 @@ const OnBoarding = () => {
         }));
     };
     
-    console.log("state", state);
     return (
         <>
             <Nav minimal={true} setShowModal={() => {}} showModal={false} />
@@ -54,42 +91,29 @@ const OnBoarding = () => {
                             onChange={handleChange}
                         />
 
+                        <label htmlFor="first_name">Last name</label>
+                        <input
+                            id="last_name"
+                            type="text"
+                            name="last_name"
+                            placeholder="Last name"
+                            required={true}
+                            value={formData.last_name}
+                            onChange={handleChange}
+                        />
+
                         <label>Birthday</label>
-                        <div className="multiple-input-container">
-                            <input
-                                id="dob_day"
-                                type="number"
-                                name="dob_day"
-                                placeholder="DD"
-                                required={true}
-                                value={formData.dob_day}
-                                onChange={handleChange}
-                                min="1"
-                                max="31"
-                            />
-                            <input
-                                id="dob_month"
-                                type="number"
-                                name="dob_month"
-                                placeholder="MM"
-                                required={true}
-                                value={formData.dob_month}
-                                onChange={handleChange}
-                                min="1"
-                                max="12"
-                            />
-                            <input
-                                id="dob_year"
-                                type="number"
-                                name="dob_year"
-                                placeholder="YYYY"
-                                required={true}
-                                value={formData.dob_year}
-                                onChange={handleChange}
-                                min="1900"
-                                max="2005"
-                            />
-                        </div>
+                        <input
+                            id="date_of_birth"
+                            type="date"
+                            name="date_of_birth"
+                            placeholder="MM"
+                            required={true}
+                            value={formData.date_of_birth}
+                            onChange={handleChange}
+                            min={new Date(new Date().setFullYear(new Date().getFullYear() - 100)).toISOString().split('T')[0]}
+                            max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0]}
+                        />
 
                         <label>Gender</label>
                         <div className="multiple-input-container">
@@ -185,9 +209,9 @@ const OnBoarding = () => {
                     <section>
                         <label htmlFor="profile-picture">Profile picture</label>
                         <input
-                            type="url"
-                            name="url"
-                            id="url"
+                            type="text"
+                            name="image_url"
+                            id="image_url"
                             onChange={handleChange}
                             required={true}
                         />

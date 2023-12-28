@@ -52,11 +52,11 @@ class User {
         }
     }
 
-    async getFromId() {
+    async getFromId(id) {
         const sql = `SELECT * FROM users WHERE id = ?`;
-        const params = [this.id];
+        const params = [id];
         try {
-            const result = db.query(sql, params);
+            const result = await db.query(sql, params);
             return result[0];
         } catch (error) {
             throw error;
@@ -73,6 +73,31 @@ class User {
             throw error;
         }
     }
+
+    async update(id, data) {
+        const userData = data;
+        delete userData.user_id;
+        var setString = Object.keys(userData)
+            .map((key) => `${key} = ?`)
+            .join(', ')
+    
+        const sql = `
+            UPDATE users
+            SET ${setString}
+            WHERE id = ?;
+        `;
+        const params = [...Object.values(userData), id];
+
+        try {
+            const result = await db.query(sql, params);
+            return result;
+        } catch (error) {
+            throw error;
+        }
+    }
+    
+    
+    
 }
 
 export default User;
