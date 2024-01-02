@@ -1,7 +1,5 @@
-import mariadb from 'mariadb';
 import bcrypt from 'bcrypt';
-
-import db from './db.js';
+import db from '../db.js';
 
 class User {
     constructor(email, password) {
@@ -95,9 +93,6 @@ class User {
             throw error;
         }
     }
-    
-    
-    
 }
 
 export default User;

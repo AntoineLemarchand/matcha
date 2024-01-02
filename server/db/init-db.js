@@ -1,4 +1,4 @@
-import db from '../src/models/db.js';
+import db from '../src/db.js';
 
 const initTables = async () => {
     try {

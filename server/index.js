@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import userRouter from './src/routes/userRouter.js';
-import authRouter from './src/routes/authRouter.js';
+import userRouter from './src/user/user.router.js';
+import authRouter from './src/auth/auth.router.js';
 import initTables from './db/init-db.js';
 
 const app = express();
