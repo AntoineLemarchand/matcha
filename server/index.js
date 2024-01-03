@@ -7,7 +7,11 @@ import initTables from './db/init-db.js';
 const app = express();
 const apiRouter = express.Router();
 
-app.use(cors());
+app.use(cors(
+  {
+    origin: `http://${process.env.SERVER_URL}:${process.env.CLIENT_PORT}`
+  }
+));
 app.use(express.json());
 
 try {

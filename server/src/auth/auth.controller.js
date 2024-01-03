@@ -1,4 +1,4 @@
-import User from "../user/user.model";
+import User from "../user/user.model.js";
 
 export async function signup(req, res) {
     const email = req.body.email;
@@ -17,7 +17,7 @@ export async function signup(req, res) {
     try {
         await user.saveToDB();
         const newUser = await user.getFromEmail(email);
-        return res.status(201).json({ message: "User created", user_id: newUser.id });
+        return res.status(201).json({ message: "User created", token: generateTokenForUser(newUser.email) });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -46,4 +46,4 @@ export async function generateTokenForUser(email) {
   }
 }
 
-export default { signup, login, generateToken }
+export default { signup, login, generateTokenForUser }

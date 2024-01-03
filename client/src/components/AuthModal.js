@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 const AuthModal = ({ setShowModal, isSignUp }) => {
     const navigate = useNavigate();
@@ -8,6 +9,7 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
     const [password, setPassword] = useState(null);
     const [confirmPassword, setConfirmPassword] = useState(null);
     const [error, setError] = useState(null);
+    const [cookies, setCookie] = useCookies(["token"]);
 
     const handleClick = () => {
         setShowModal(false);
@@ -38,7 +40,7 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
             .then((data) => {
                 setError(null);
                 setShowModal(false);
-                navigate("/onboarding", { state: { user_id: data.user_id } });
+                setCookie("token", data.token, { path: "/", sameSite: true });
             })
             .catch((error) => {
                 console.error('There was an error!', error);

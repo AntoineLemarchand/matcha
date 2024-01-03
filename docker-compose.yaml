@@ -21,7 +21,7 @@ services:
     env_file:
       - .env
     environment:
-      - REACT_APP_API_URL=http://${SERVER_URL}:${SERVER_PORT}/api
+      - REACT_APP_API_URL=${SERVER_URL}:${CLIENT_PORT}/api
     build:
       context: .
       dockerfile: ./client/docker/Dockerfile
