@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import User from "../user/user.model.js";
 
 export async function signup(req, res) {
@@ -38,7 +39,8 @@ export async function login(req, res) {
 
 export async function generateTokenForUser(email) {
   try {
-      const user = await user.getFromEmail(email);
+      const user = new User();
+      await user.getFromEmail(email);
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
       return token;
   } catch (error) {
