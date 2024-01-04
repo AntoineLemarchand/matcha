@@ -40,7 +40,7 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
             .then((data) => {
                 setError(null);
                 setShowModal(false);
-                setCookie("token", data.token, { path: "/", sameSite: true });
+                navigate("/");
             })
             .catch((error) => {
                 console.error('There was an error!', error);

@@ -18,7 +18,10 @@ export async function signup(req, res) {
     try {
         await user.saveToDB();
         const newUser = await user.getFromEmail(email);
-        return res.status(201).json({ message: "User created", token: generateTokenForUser(newUser.email) });
+        const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET);
+        console.log(token)
+        res.cookie("token", token, { httpOnly: true });
+        res.send("User created");
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -34,18 +37,22 @@ export async function login(req, res) {
     if (!user.validateCredentials()) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
-    return res.status(200).json({ message: "User logged in", token: user.generateTokenForUser(user.email) })
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+    res.cookie("token", token, { httpOnly: true, sameSite: true });
+    return res.status(200).json({ message: "User logged in" });
 }
 
-export async function generateTokenForUser(email) {
-  try {
-      const user = new User();
-      await user.getFromEmail(email);
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-      return token;
-  } catch (error) {
-      throw error;
-  }
+export async function verify(req, res) {
+    // cookie is sent using credentials: true
+    const token = req.cookies.token;
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = new User();
+        await user.getFromId(decoded.id);
+        return res.status(200).json({ message: "User verified", user: user });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
 }
 
-export default { signup, login, generateTokenForUser }
+export default { signup, login, verify }

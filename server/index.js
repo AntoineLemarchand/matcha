@@ -3,16 +3,19 @@ import cors from 'cors';
 import userRouter from './src/user/user.router.js';
 import authRouter from './src/auth/auth.router.js';
 import initTables from './db/init-db.js';
+import cookies from 'cookie-parser';
 
 const app = express();
 const apiRouter = express.Router();
 
 app.use(cors(
   {
-    origin: `http://${process.env.SERVER_URL}:${process.env.CLIENT_PORT}`
+    origin: `http://${process.env.SERVER_URL}:${process.env.CLIENT_PORT}`,
+    credentials: true,
   }
 ));
 app.use(express.json());
+app.use(cookies());
 
 try {
   initTables();

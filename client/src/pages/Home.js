@@ -1,16 +1,43 @@
 import Nav from "../components/Nav";
 import AuthModal from "../components/AuthModal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 const Home = () => {
     const [showModal, setShowModal] = useState(false);
     const [isSignUp, setIsSignUp] = useState(true);
     const authToken = false;
+    const navigate = useNavigate();
 
     const handleClick = () => {
         setShowModal(true);
         setIsSignUp(true);
     };
+
+    useEffect(() => {
+      fetch(`${process.env.REACT_APP_API_URL}/auth/verify`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+      })
+      .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+      })
+      .then((data) => {
+          if (data) {
+            console.log(data)
+            navigate("/dashboard");
+          }
+      })
+      .catch((error) => {
+          console.error(error);
+      });
+    }, [navigate]);
 
     return (
         <div className="overlay">
