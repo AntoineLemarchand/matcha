@@ -2,7 +2,6 @@ import Nav from "../components/Nav";
 import AuthModal from "../components/AuthModal";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie';
 
 const Home = () => {
     const [showModal, setShowModal] = useState(false);
@@ -31,7 +30,7 @@ const Home = () => {
       .then((data) => {
           if (data) {
             console.log(data)
-            navigate("/dashboard");
+            navigate("/dashboard", { user_id: data.user_id })
           }
       })
       .catch((error) => {
