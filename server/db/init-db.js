@@ -16,6 +16,7 @@ const initTables = async () => {
             about TEXT,
             image_url VARCHAR(255),
             password VARCHAR(255) NOT NULL,
+            initialized BOOLEAN NOT NULL DEFAULT FALSE,
             PRIMARY KEY (id)
         );`);
         console.log("[INFO] User table created")

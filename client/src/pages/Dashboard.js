@@ -16,18 +16,22 @@ const Dashboard = () => {
           credentials: "include",
       })
       .then((response) => {
-          if (response.ok) {
+          if (response.status === 200) {
             return response.json();
+          } else {
+            navigate("/")
           }
       })
       .then((data) => {
           if (data) {
-            setUserId(data.user_id);
+            setUserId(data.user);
+            if (!data.initialized) {
+                navigate("/onboarding", { state: { user_id: data.user } });
+            }
           }
       })
       .catch((error) => {
           console.error(error);
-          navigate("/")
       });
     }, [navigate]);
 

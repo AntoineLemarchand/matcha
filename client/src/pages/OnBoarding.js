@@ -16,6 +16,7 @@ const OnBoarding = () => {
         about: "",
         image_url: "",
         matches: JSON.stringify([]),
+        initialized: true,
     });
 
     useEffect(() => {
@@ -23,7 +24,7 @@ const OnBoarding = () => {
             if (state && state.user_id && formData.email === "") {
                 const dataFetch = async () => {
                     const res = await fetch(`/api/user/${state.user_id}`);
-                    if (res.ok) {
+                    if (res.status === 200) {
                         const data = await res.json();
                         setFormData((prevState) => ({
                             ...prevState,
@@ -35,11 +36,9 @@ const OnBoarding = () => {
                     }
                 }
                 dataFetch();
-            } else {
-                navigate("/");
             }
         } catch (error) {
-            navigate("/");
+            console.error(error)
         }
     }, [state, navigate, formData.email]);
 
