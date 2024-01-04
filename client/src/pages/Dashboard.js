@@ -1,8 +1,36 @@
 import TinderCard from "react-tinder-card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChatContainer from "../components/ChatContainer";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+    const navigate = useNavigate();
+    const [userId, setUserId] = useState();
+
+    useEffect(() => {
+      fetch(`${process.env.REACT_APP_API_URL}/auth/verify`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+      })
+      .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+      })
+      .then((data) => {
+          if (data) {
+            setUserId(data.user_id);
+          }
+      })
+      .catch((error) => {
+          console.error(error);
+          navigate("/")
+      });
+    }, [navigate]);
+
     const characters = [
         {
             name: "Richard Hendricks",

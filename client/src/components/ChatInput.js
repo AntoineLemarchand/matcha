@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const ChatInput = () => {
-    const [textarea, setTextarea] = useState(null);
+    const [textarea, setTextarea] = useState('');
     return (
         <div className="chat-input">
             <textarea value={textarea} onChange={(e) => setTextarea(e.target.value)} />

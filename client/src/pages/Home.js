@@ -29,7 +29,6 @@ const Home = () => {
       })
       .then((data) => {
           if (data) {
-            console.log(data)
             navigate("/dashboard", { user_id: data.user_id })
           }
       })

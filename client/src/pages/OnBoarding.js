@@ -41,12 +41,12 @@ const OnBoarding = () => {
         } catch (error) {
             navigate("/");
         }
-    }, [state, navigate]);
+    }, [state, navigate, formData.email]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         const dataFetch = async () => {
-            const res = await fetch(`/api/user/${formData.user_id}`, {
+            await fetch(`/api/user/${formData.user_id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
