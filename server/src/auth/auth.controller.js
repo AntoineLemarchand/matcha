@@ -49,7 +49,7 @@ export async function verify(req, res) {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = new User();
         await user.getFromId(decoded.id);
-        return res.status(200).json({ message: "User verified", user: user });
+        return res.status(200).json({ message: "User verified", user_id: decoded.id });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
