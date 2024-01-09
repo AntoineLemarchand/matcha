@@ -8,7 +8,7 @@ const Dashboard = () => {
     const [user, setUser] = useState({});
 
     useEffect(() => {
-      fetch(`${process.env.REACT_APP_API_URL}/user/`, {
+      fetch(`${process.env.REACT_APP_API_URL}/auth/verify`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -23,7 +23,10 @@ const Dashboard = () => {
           }
       })
       .then((data) => {
-        setUser(data);
+        if (!data.user.initialized) {
+          navigate("/onboarding");
+        }
+        setUser(data.user);
       })
       .catch((error) => {
           console.error(error);

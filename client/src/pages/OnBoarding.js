@@ -3,8 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Nav from "../components/Nav";
 
 const OnBoarding = () => {
-    const state = useLocation().state;
     const navigate = useNavigate();
+    const [id, setId] = useState(0);
     const [formData, setFormData] = useState({
         email: "",
         first_name: "",
@@ -20,31 +20,37 @@ const OnBoarding = () => {
     });
 
     useEffect(() => {
-        try {
-            if (state && state.user_id && formData.email === "") {
-                const dataFetch = async () => {
-                    const res = await fetch(`/api/user/${state.user_id}`);
-                    if (res.status === 200) {
-                        const data = await res.json();
-                        setFormData((prevState) => ({
-                            ...prevState,
-                            email: data.email,
-                        }));
-                    } else {
-                        navigate("/");
-                    }
-                }
-                dataFetch();
-            }
-        } catch (error) {
-            console.error(error)
-        }
-    }, [state, navigate, formData.email]);
+      fetch(`${process.env.REACT_APP_API_URL}/auth/verify`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+      })
+      .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+      })
+      .then((data) => {
+          if (data) {
+            console.log(data)
+            setFormData((prevState) => ({
+              ...prevState,
+              email: data.user.email,
+            }));
+            setId(data.user.id);
+          }
+      })
+      .catch((error) => {
+          console.error(error);
+      });
+    }, [navigate]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         const dataFetch = async () => {
-            return await fetch(`/api/user/${state.user_id}`, {
+            return await fetch(`/api/user/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

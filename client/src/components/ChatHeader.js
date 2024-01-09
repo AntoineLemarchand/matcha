@@ -1,3 +1,6 @@
+import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 const ChatHeader = ({user}) => {
     return (
         <div className="chat-container-header">
@@ -7,7 +10,9 @@ const ChatHeader = ({user}) => {
                 </div>
                 <h3>{user.first_name}</h3>
             </div>
-            <i className="log-out-icon">⇦</i>
+            <button>
+              <FontAwesomeIcon icon={faSignOutAlt}/>
+            </button>
         </div>
     );
 };
