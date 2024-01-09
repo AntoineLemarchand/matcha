@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
     const navigate = useNavigate();
-    const [userId, setUserId] = useState();
+    const [user, setUser] = useState({});
 
     useEffect(() => {
-      fetch(`${process.env.REACT_APP_API_URL}/auth/verify`, {
+      fetch(`${process.env.REACT_APP_API_URL}/user/`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -23,12 +23,7 @@ const Dashboard = () => {
           }
       })
       .then((data) => {
-          if (data) {
-            setUserId(data.user);
-            if (!data.initialized) {
-                navigate("/onboarding", { state: { user_id: data.user } });
-            }
-          }
+        setUser(data);
       })
       .catch((error) => {
           console.error(error);
@@ -67,7 +62,7 @@ const Dashboard = () => {
     };
     return (
         <div className="dashboard">
-            <ChatContainer />
+            <ChatContainer user={user} />
             <div className="swipe-container">
                 <div className="card-container">
                     {characters.map((character) => (
