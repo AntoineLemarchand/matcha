@@ -36,9 +36,7 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
                 return response.json();
             })
             .then(() => {
-                setError(null);
-                setShowModal(false);
-                navigate("/");
+                navigate("/dashboard");
             })
             .catch((error) => {
                 console.error('There was an error!', error);

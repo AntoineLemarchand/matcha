@@ -28,7 +28,6 @@ const OnBoarding = () => {
                         const data = await res.json();
                         setFormData((prevState) => ({
                             ...prevState,
-                            user_id: data.id,
                             email: data.email,
                         }));
                     } else {
@@ -45,19 +44,20 @@ const OnBoarding = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const dataFetch = async () => {
-            await fetch(`/api/user/${formData.user_id}`, {
+            return await fetch(`/api/user/${state.user_id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
+                credentials: "include",
                 body: JSON.stringify(formData),
             });
         };
         const data = await dataFetch();
-        if (data.ok) {
+        if (!data.ok) {
             console.log("error");
         } else {
-            navigate("/home", { state:  data  });
+            navigate("/dashboard");
         }
     };
     const handleChange = (e) => {

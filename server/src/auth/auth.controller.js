@@ -18,6 +18,7 @@ export async function signup(req, res) {
     try {
         await user.saveToDB();
         const newUser = await user.getFromEmail(email);
+        console.log(newUser.id)
         const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET);
         res.cookie("token", token, { httpOnly: true });
       return res.status(201).json({ message: "User created" });
@@ -42,14 +43,14 @@ export async function login(req, res) {
 }
 
 export async function verify(req, res) {
-    // cookie is sent using credentials: true
     const token = req.cookies.token;
     if (!token) {
       return res.status(401).json({ message: "No token provided" });
     }
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await new User().getFromId(decoded.id);
+        console.log(decoded);
+        const user = await (new User()).getFromId(decoded.id);
         return res.status(200).json({ message: "User verified", user: user.id, initialized: user.initialized });
     } catch (error) {
         return res.status(500).json({ message: error.message });

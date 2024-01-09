@@ -74,7 +74,6 @@ class User {
 
     async update(id, data) {
         const userData = data;
-        delete userData.user_id;
         var setString = Object.keys(userData)
             .map((key) => `${key} = ?`)
             .join(', ')
@@ -85,9 +84,11 @@ class User {
             WHERE id = ?;
         `;
         const params = [...Object.values(userData), id];
+        console.log(sql, params);
 
         try {
             const result = await db.query(sql, params);
+            console.log(result);
             return result;
         } catch (error) {
             throw error;
