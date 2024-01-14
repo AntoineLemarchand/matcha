@@ -19,7 +19,8 @@
     "jsonwebtoken": "^9.0.2",
     "mariadb": "^3.2.2",
     "serve": "^14.2.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "ws": "^8.16.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
