@@ -6,16 +6,14 @@ import { useState } from "react";
 const ChatContainer = ({user}) => {
   const [ tab, setTab ] = useState(false)
 
-  const switchTab = (value) => setTab(value);
-
   return (
     <div className="chat-container">
-      <ChatHeader user={user} switchTab={switchTab}/>
-      {tab}
+      <ChatHeader user={user} tab={tab} switchTab={setTab}/>
       {
         tab
           ? <MatchesDisplay />
-          : <ChatDisplay />}
+          : <ChatDisplay />
+      }
 
     </div>
   );

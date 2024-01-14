@@ -332,7 +332,7 @@ nav .logo-container .logo {
   padding: 10px;
 }
 
-.chat-container .option:disabled {
+.chat-container .option.disabled {
   border-bottom: solid 4px rgb(187, 187, 187);
 }
 
