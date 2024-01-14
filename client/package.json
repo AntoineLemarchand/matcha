@@ -14,10 +14,12 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.9.0",
     "react-tinder-card": "^1.6.2",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "ws": "^8.16.0"
   },
   "devDependencies": {
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "@babel/plugin-proposal-private-property-in-object": "^7.16.7"
   },
   "scripts": {
     "start:frontend": "react-scripts start",

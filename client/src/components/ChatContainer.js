@@ -1,22 +1,24 @@
 import ChatHeader from "./ChatHeader";
 import MatchesDisplay from "./MatchesDisplay";
 import ChatDisplay from "./ChatDisplay";
+import { useState } from "react";
 
 const ChatContainer = ({user}) => {
-    return (
-        <div className="chat-container">
-            <ChatHeader user={user}/>
+  const [ tab, setTab ] = useState(false)
 
-            <div>
-                <button className="option">Matches</button>
-                <button className="option">Chat</button>
-            </div>
+  const switchTab = (value) => setTab(value);
 
-            <MatchesDisplay />
+  return (
+    <div className="chat-container">
+      <ChatHeader user={user} switchTab={switchTab}/>
+      {tab}
+      {
+        tab
+          ? <MatchesDisplay />
+          : <ChatDisplay />}
 
-            <ChatDisplay />
-        </div>
-    );
+    </div>
+  );
 };
 
 export default ChatContainer;

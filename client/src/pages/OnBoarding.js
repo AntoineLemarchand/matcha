@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Nav from "../components/Nav";
 
 const OnBoarding = () => {
@@ -30,11 +30,12 @@ const OnBoarding = () => {
       .then((response) => {
           if (response.ok) {
             return response.json();
+          } else {
+            navigate("/");
           }
       })
       .then((data) => {
           if (data) {
-            console.log(data)
             setFormData((prevState) => ({
               ...prevState,
               email: data.user.email,
