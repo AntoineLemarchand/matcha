@@ -1,4 +1,4 @@
-import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect } from "react";
 
@@ -20,6 +20,10 @@ const ChatHeader = ({user, tab, switchTab}) => {
     })
   }
 
+  const closeChat = () => {
+    document.querySelector('.chat-container').style.right = '100%'
+  }
+
   return (
     <div className="chat-container-header">
       <div className="chat-container-header-account">
@@ -29,9 +33,14 @@ const ChatHeader = ({user, tab, switchTab}) => {
           </div>
           <h3>{user.first_name}</h3>
         </div>
-        <button className="log-out-icon">
-          <FontAwesomeIcon icon={faSignOutAlt}/>
-        </button>
+        <div className="icons">
+          <button>
+            <FontAwesomeIcon icon={faSignOutAlt}/>
+          </button>
+          <button onClick={closeChat}>
+            <FontAwesomeIcon icon={faClose}/>
+          </button>
+        </div>
       </div>
       <div className="chat-container-options">
         <button className='option' onClick={()=>changeTab(true)}>Matches</button>

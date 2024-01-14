@@ -2,6 +2,8 @@ import TinderCard from "react-tinder-card";
 import { useEffect, useState } from "react";
 import ChatContainer from "../components/ChatContainer";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars, faClose, faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -33,6 +35,10 @@ const Dashboard = () => {
       });
     }, [navigate]);
 
+    const openChat = () => {
+      document.querySelector('.chat-container').style.right = '0%'
+    }
+
     const characters = [
         {
             name: "Richard Hendricks",
@@ -63,10 +69,16 @@ const Dashboard = () => {
 
     const outOfFrame = (name) => {
     };
+
     return (
         <div className="dashboard">
             <ChatContainer user={user} />
             <div className="swipe-container">
+                <div className="top-bar">
+                  <button onClick={openChat}>
+                    <FontAwesomeIcon icon={faBars}/>
+                  </button>
+                </div>
                 <div className="card-container">
                     {characters.map((character) => (
                         <TinderCard
@@ -86,13 +98,14 @@ const Dashboard = () => {
                             </div>
                         </TinderCard>
                     ))}
-                    <div className="swipe-info">
-                        {lastDirection ? (
-                            <p>You swiped {lastDirection}</p>
-                        ) : (
-                            <p />
-                        )}
-                    </div>
+                </div>
+                <div className="bottom-bar">
+                  <button onClick={openChat}>
+                    <FontAwesomeIcon icon={faClose}/>
+                  </button>
+                  <button onClick={openChat}>
+                    <FontAwesomeIcon icon={faHeart}/>
+                  </button>
                 </div>
             </div>
         </div>

@@ -84,11 +84,9 @@ class User {
             WHERE id = ?;
         `;
         const params = [...Object.values(userData), id];
-        console.log(sql, params);
 
         try {
             const result = await db.query(sql, params);
-            console.log(result);
             return result;
         } catch (error) {
             throw error;

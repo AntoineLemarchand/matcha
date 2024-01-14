@@ -254,8 +254,25 @@ nav .logo-container .logo {
   width: 100vw;
   height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+}
+
+.swipe-container .top-bar, .swipe-container .bottom-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: .5rem;
+  padding-left: 2rem;
+}
+
+.swipe-container .top-bar button, .swipe-container .bottom-bar button {
+  border: solid rgb(226, 115, 115) 2px;
+}
+
+.swipe-container .bottom-bar {
+  justify-content: space-evenly;
 }
 
 .swipe {
@@ -301,9 +318,10 @@ nav .logo-container .logo {
   text-align: left;
   z-index: 1;
   position: absolute;
-  /* right: 100%; */
+  right: 100%;
   width: 100%;
   height: 100%;
+  transition: right .3s ease-in-out;
 }
 
 .chat-container .chat-container-header {
@@ -330,20 +348,21 @@ nav .logo-container .logo {
   font-size: 20px;
   margin: 2px;
   padding: 10px;
+  border-radius: 0px;
 }
 
 .chat-container .option.disabled {
   border-bottom: solid 4px rgb(187, 187, 187);
 }
 
-.chat-container .log-out-icon,
+.chat-container .icons,
 .chat-container .profile {
   display: flex;
   align-items: center;
   color: rgb(255, 255, 255);
 }
 
-.chat-container .log-out-icon {
+button {
   width: 2.5rem;
   height: 2.5rem;
   margin: auto 1.25rem;
@@ -354,6 +373,7 @@ nav .logo-container .logo {
   border: none;
   background: white;
   border-radius: 40%;
+  cursor: pointer;
 }
 
 .chat-container-options {
