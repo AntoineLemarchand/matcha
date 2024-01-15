@@ -6,22 +6,24 @@ networks:
 
 services:
   proxy:
+    restart: unless-stopped
     env_file:
       - .env
     build:
       context: .
       dockerfile: ./proxy/DockerFile
     container_name: proxy
-    restart: always
     ports:
       - "${CLIENT_PORT}:80"
     networks:
       - frontend
   client:
+    restart: unless-stopped
     env_file:
       - .env
     environment:
-      - REACT_APP_API_URL=${SERVER_URL}:${CLIENT_PORT}/api
+      - REACT_APP_API_URL=http://${SERVER_URL}:${CLIENT_PORT}/api
+      - REACT_APP_WS_URL=ws://${SERVER_URL}:${CLIENT_PORT}
     build:
       context: .
       dockerfile: ./client/docker/Dockerfile
@@ -35,6 +37,7 @@ services:
       - server
 
   server:
+    restart: unless-stopped
     env_file: 
       - .env
     build:
@@ -49,13 +52,12 @@ services:
       - /app/node_modules
     depends_on:
       - db
-
   db:
+    restart: unless-stopped
     env_file: 
       - .env
     image: mariadb:latest
     container_name: db
-    restart: always
     networks:
       - backend
     volumes:

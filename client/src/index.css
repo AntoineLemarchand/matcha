@@ -32,6 +32,8 @@ h2 {
   padding: 12px 30px;
   border-radius: 30px;
   border: none;
+  margin: 0 auto;
+  width: 20%;
 }
 
 .primary-button:hover {

@@ -6,6 +6,7 @@ import initTables from './db/init-db.js';
 import cookies from 'cookie-parser';
 import http from 'http';
 import { WebSocketServer } from 'ws';
+import authController from './src/auth/auth.controller.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -39,7 +40,13 @@ app.use((err, req, res, next) => {
 
 const wss = new WebSocketServer({ server });
 
-wss.on('connection', (ws) => {
+wss.on('connection', (ws, req) => {
+  const token = req.headers.cookie.split('=')[1];
+  try {
+    authController.verify(token);
+  } catch (err) {
+    ws.close();
+  }
   ws.on('message', (message) => {
     console.log('received: %s', message);
   });
