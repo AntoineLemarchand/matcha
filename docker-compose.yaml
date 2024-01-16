@@ -23,7 +23,7 @@ services:
       - .env
     environment:
       - REACT_APP_API_URL=http://${SERVER_URL}:${CLIENT_PORT}/api
-      - REACT_APP_WS_URL=ws://${SERVER_URL}:${CLIENT_PORT}
+      - REACT_APP_WS_URL=ws://${SERVER_URL}:${CLIENT_PORT}/api
     build:
       context: .
       dockerfile: ./client/docker/Dockerfile

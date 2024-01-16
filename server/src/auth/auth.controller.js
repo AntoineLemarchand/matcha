@@ -49,7 +49,6 @@ export async function verify(req, res) {
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded)
     const user = await (new User()).getFromId(decoded.id);
     delete user.password;
     return res.status(200).json({ message: "User verified", user: user, initialized: user.initialized });

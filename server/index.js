@@ -41,14 +41,13 @@ app.use((err, req, res, next) => {
 const wss = new WebSocketServer({ server });
 
 wss.on('connection', (ws, req) => {
-  const token = req.headers.cookie.split('=')[1];
-  try {
-    authController.verify(token);
-  } catch (err) {
-    ws.close();
-  }
   ws.on('message', (message) => {
-    console.log('received: %s', message);
+    console.log('Received message =>', message.toString());
+    ws.send('ho!');
+  });
+
+  ws.on('error', (error) => {
+    console.error('WebSocket error:', error);
   });
 });
 

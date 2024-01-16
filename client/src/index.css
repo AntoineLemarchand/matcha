@@ -33,7 +33,7 @@ h2 {
   border-radius: 30px;
   border: none;
   margin: 0 auto;
-  width: 20%;
+  min-width: 15rem;
 }
 
 .primary-button:hover {
