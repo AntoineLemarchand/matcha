@@ -163,10 +163,6 @@ nav .logo-container .logo {
 
 /*-------- OnBoarding Page --------*/
 
-.onboarding {
-  border-top: solid 1px rgb(154, 154, 154);
-}
-
 .onboarding form {
   display: flex;
   justify-content: center;
@@ -262,7 +258,6 @@ nav .logo-container .logo {
 }
 
 .swipe-container .top-bar, .swipe-container .bottom-bar {
-  width: 100%;
   display: flex;
   align-items: center;
   padding: .5rem;

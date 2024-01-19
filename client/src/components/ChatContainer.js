@@ -1,7 +1,7 @@
 import ChatHeader from "./ChatHeader";
 import MatchesDisplay from "./MatchesDisplay";
-import ChatDisplay from "./ChatDisplay";
 import { useState } from "react";
+import OnBoarding from "../pages/OnBoarding";
 
 const ChatContainer = ({user}) => {
   const [ tab, setTab ] = useState(false)
@@ -12,7 +12,7 @@ const ChatContainer = ({user}) => {
       {
         tab
           ? <MatchesDisplay />
-          : <ChatDisplay />
+          : <OnBoarding header='0'/>
       }
 
     </div>

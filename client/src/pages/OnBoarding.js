@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Nav from "../components/Nav";
 
-const OnBoarding = () => {
+const OnBoarding = ({header}) => {
     const navigate = useNavigate();
     const [id, setId] = useState(0);
     const [formData, setFormData] = useState({
@@ -36,9 +36,12 @@ const OnBoarding = () => {
       })
       .then((data) => {
           if (data) {
+            const date = new Date(data.user.date_of_birth);
+            const formattedDate = date.toISOString().split('T')[0];
             setFormData((prevState) => ({
               ...prevState,
-              email: data.user.email,
+              ...data.user,
+              date_of_birth: formattedDate,
             }));
             setId(data.user.id);
           }
@@ -80,10 +83,13 @@ const OnBoarding = () => {
     
     return (
         <>
-            <Nav minimal={true} setShowModal={() => {}} showModal={false} />
+            {
+              header != 0 && 
+              <Nav minimal={true} setShowModal={() => {}} showModal={false} />
+            }
 
             <div className="onboarding">
-                <h2>Create account</h2>
+                {header != 0 && <h2>Create account</h2>}
                 <form onSubmit={handleSubmit}>
                     <section>
                         <label htmlFor="first_name">First name</label>

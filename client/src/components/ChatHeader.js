@@ -1,8 +1,11 @@
 import { faClose, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ChatHeader = ({user, tab, switchTab}) => {
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     changeTab(tab)
@@ -14,7 +17,7 @@ const ChatHeader = ({user, tab, switchTab}) => {
       child.classList.add('disabled')
       if (child.innerHTML === 'Matches' && value) {
         child.classList.remove('disabled')
-      } else if (child.innerHTML === 'Chat' && !value) {
+      } else if (child.innerHTML === 'Options' && !value) {
         child.classList.remove('disabled')
       }
     })
@@ -22,6 +25,24 @@ const ChatHeader = ({user, tab, switchTab}) => {
 
   const closeChat = () => {
     document.querySelector('.chat-container').style.right = '100%'
+  }
+
+  const signOut = () => {
+    fetch(`${process.env.REACT_APP_API_URL}/auth/logout`, {
+      method: "GET",
+      headers: {
+      "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }).then((response) => {
+      if (response.status === 200) {
+        navigate("/");
+      } else {
+        console.log('error')
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   return (
@@ -34,7 +55,7 @@ const ChatHeader = ({user, tab, switchTab}) => {
           <h3>{user.first_name}</h3>
         </div>
         <div className="icons">
-          <button>
+          <button onClick={signOut}>
             <FontAwesomeIcon icon={faSignOutAlt}/>
           </button>
           <button onClick={closeChat}>
@@ -44,7 +65,7 @@ const ChatHeader = ({user, tab, switchTab}) => {
       </div>
       <div className="chat-container-options">
         <button className='option' onClick={()=>changeTab(true)}>Matches</button>
-        <button className='option' onClick={()=>changeTab(false)}>Chat</button>
+        <button className='option' onClick={()=>changeTab(false)}>Options</button>
       </div>
     </div>
   );
