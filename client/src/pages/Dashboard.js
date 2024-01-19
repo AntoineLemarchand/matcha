@@ -36,14 +36,13 @@ const Dashboard = () => {
       });
   }, [navigate]);
 
-  const { sendMessage, lastMessage, readyState } = useWebSocket(process.env.REACT_APP_WS_URL + '/connection', {
+  const { sendMessage, lastMessage, readyState } = useWebSocket(
+    process.env.REACT_APP_WS_URL + '/connection', {
     onOpen: () => console.log("ws connection opened"),
     onClose: () => console.log("ws connection closed"),
     onError: (event) => console.error(event),
     onreceiveMessage: (event) => console.log(event),
   })
-
-  sendMessage("coucou")
 
   const openChat = () => {
     document.querySelector('.chat-container').style.right = '0%'
@@ -78,6 +77,7 @@ const Dashboard = () => {
   };
 
   const outOfFrame = (name) => {
+    console.log(lastDirection);
   };
 
   return (

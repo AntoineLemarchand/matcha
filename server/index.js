@@ -6,7 +6,7 @@ import initTables from './db/init-db.js';
 import cookies from 'cookie-parser';
 import http from 'http';
 import { WebSocketServer } from 'ws';
-import authController from './src/auth/auth.controller.js';
+import jwt from 'jsonwebtoken';
 
 const app = express();
 const server = http.createServer(app);
@@ -41,9 +41,29 @@ app.use((err, req, res, next) => {
 const wss = new WebSocketServer({ server });
 
 wss.on('connection', (ws, req) => {
+  const token = req.headers.cookie.split('=')[1];
+  if (!token) {
+    ws.send(JSON.stringify({ action: 'logout' }));
+    ws.close();
+    return
+  }
+  const userId = jwt.verify(token, process.env.JWT_SECRET).id;
+  if (!userId) {
+    ws.send(JSON.stringify({ action: 'logout' }));
+    ws.close();
+    return
+  }
   ws.on('message', (message) => {
-    console.log('Received message =>', message.toString());
-    ws.send('ho!');
+    const data = JSON.parse(message.toString());
+    if (!data.action) return;
+    switch(data.action) {
+      case 'chat':
+        ws.send('not implemented yet');
+        break;
+      case 'swipe':
+        ws.send('not implemented yet');
+        break;
+    }
   });
 
   ws.on('error', (error) => {
