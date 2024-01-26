@@ -165,15 +165,24 @@ nav .logo-container .logo {
 
 .onboarding form {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  width: 100%;
 }
 
 .onboarding form section {
   display: flex;
-  flex-direction: column;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
   padding: 20px;
-  width: 35%;
   text-align: start;
+}
+
+.onboarding form section > div {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  padding: 1rem;
 }
 
 .onboarding form input {
@@ -209,6 +218,10 @@ nav .logo-container .logo {
   border-radius: 10px;
   transition: all 0.3s;
   margin-right: 10px;
+}
+
+.onboarding form textarea {
+  width: 100%;
 }
 
 .onboarding form input[type="radio"] {
@@ -309,8 +322,6 @@ nav .logo-container .logo {
 
 .chat-container {
   background-color: rgb(255, 255, 255);
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
-    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
   width: 30%;
   text-align: left;
   z-index: 1;

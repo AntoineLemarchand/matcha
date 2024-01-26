@@ -17,7 +17,7 @@ const ChatHeader = ({user, tab, switchTab}) => {
       child.classList.add('disabled')
       if (child.innerHTML === 'Matches' && value) {
         child.classList.remove('disabled')
-      } else if (child.innerHTML === 'Options' && !value) {
+      } else if (child.innerHTML === 'Profile' && !value) {
         child.classList.remove('disabled')
       }
     })
@@ -65,7 +65,7 @@ const ChatHeader = ({user, tab, switchTab}) => {
       </div>
       <div className="chat-container-options">
         <button className='option' onClick={()=>changeTab(true)}>Matches</button>
-        <button className='option' onClick={()=>changeTab(false)}>Options</button>
+        <button className='option' onClick={()=>changeTab(false)}>Profile</button>
       </div>
     </div>
   );
