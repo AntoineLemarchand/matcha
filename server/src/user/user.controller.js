@@ -40,4 +40,4 @@ async function update(req, res) {
   }
 }
 
-export default { getAll, getById, update };
+export default { getAll, getById, update }

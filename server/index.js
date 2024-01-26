@@ -7,6 +7,7 @@ import cookies from 'cookie-parser';
 import http from 'http';
 import { WebSocketServer } from 'ws';
 import jwt from 'jsonwebtoken';
+import User from './src/user/user.model.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -61,6 +62,7 @@ wss.on('connection', (ws, req) => {
     ws.close();
     return
   }
+  const propositions = (new User()).getPropositions(userId, 10);
   ws.on('message', (message) => {
     const data = JSON.parse(message.toString());
     if (!data.action) return;
@@ -70,6 +72,9 @@ wss.on('connection', (ws, req) => {
         break;
       case 'swipe':
         ws.send('not implemented yet');
+        break;
+      case 'propositions':
+        ws.send(JSON.stringify({ action: 'propositions', data: propositions }));
         break;
     }
   });

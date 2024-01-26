@@ -10,6 +10,15 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
 
+  const { sendMessage, lastMessage, readyState } = useWebSocket(
+    process.env.REACT_APP_WS_URL + '/connection', {
+    onOpen: () => console.log("ws connection opened"),
+    onClose: () => console.log("ws connection closed"),
+    onError: (event) => console.error(event),
+    onreceiveMessage: (event) => console.log(event),
+  })
+
+
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/auth/verify`, {
       method: "GET",
@@ -34,41 +43,14 @@ const Dashboard = () => {
       .catch((error) => {
         console.error(error);
       });
+    sendMessage(JSON.stringify({ action: 'propositions' }));
   }, [navigate]);
-
-  const { sendMessage, lastMessage, readyState } = useWebSocket(
-    process.env.REACT_APP_WS_URL + '/connection', {
-    onOpen: () => console.log("ws connection opened"),
-    onClose: () => console.log("ws connection closed"),
-    onError: (event) => console.error(event),
-    onreceiveMessage: (event) => console.log(event),
-  })
 
   const openChat = () => {
     document.querySelector('.chat-container').style.right = '0%'
   }
 
   const characters = [
-    {
-      name: "Richard Hendricks",
-      url: "./img/richard.jpg",
-    },
-    {
-      name: "Erlich Bachman",
-      url: "./img/erlich.jpg",
-    },
-    {
-      name: "Monica Hall",
-      url: "./img/monica.jpg",
-    },
-    {
-      name: "Jared Dunn",
-      url: "./img/jared.jpg",
-    },
-    {
-      name: "Dinesh Chugtai",
-      url: "./img/dinesh.jpg",
-    },
   ];
   const [lastDirection, setLastDirection] = useState();
 

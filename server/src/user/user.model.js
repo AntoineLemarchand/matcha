@@ -90,6 +90,24 @@ class User {
       throw error;
     }
   }
+
+  async getPropositions(id, amount) {
+    const description = (await this.getFromId(id)).about;
+    const tagRegex = /#(\w+)/g;
+    const userHashtags = description.match(tagRegex);
+    const otherUsers = await this.getAll();
+    //[ [ id, count ], ... ]
+    const propositions = []
+    for (const user of otherUsers) {
+      const otherHashtags = user.about.match(tagRegex);
+      let count = 0;
+      for (const hashtag of userHashtags) {
+        if (otherHashtags.includes(hashtag)) count++;
+      }
+      propositions.push([user.id, count]);
+    }
+    return propositions.sort((a, b) => b[1] - a[1]).slice(0, amount);
+  }
 }
 
 export default User;
