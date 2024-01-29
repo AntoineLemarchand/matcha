@@ -23,13 +23,11 @@ const ImageUpload = ({ name, imageBuffer, onFileChange }) => {
         accept="image/*"
         multiple
       />
-      { imageBuffer && 
+      { imageBuffer &&
         <img
           src={imagePreview(imageBuffer)}
           alt="Preview"
           style={{ height: "200px" }}
-          onLoad={() => console.log('Image loaded successfully')}
-          onError={(e) => console.error('Error loading image', e)}
         />
       }
     </div>

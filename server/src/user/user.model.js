@@ -94,14 +94,18 @@ class User {
   async getPropositions(id, amount) {
     const description = (await this.getFromId(id)).about ?? "";
     const tagRegex = /#(\w+)/g;
-    let userHashtags = description.match(tagRegex) ?? [];
-    if (typeof userHashtags === 'string') userHashtags = [userHashtags];
     const otherUsers = await this.getAll();
     const propositions = []
+
+    let userHashtags = description.match(tagRegex) ?? [];
+    if (typeof userHashtags === 'string') userHashtags = [userHashtags];
+
     for (const user of otherUsers) {
       if (user.id === id) continue;
+
       const userDescription = user.about ?? "";
       const otherHashtags = userDescription.match(tagRegex) ?? [];
+
       if (typeof otherHashtags === 'string') otherHashtags = [otherHashtags];
       let count = 0;
       for (const hashtag of userHashtags) {
@@ -109,7 +113,8 @@ class User {
       }
       propositions.push([user.id, count]);
     }
-    return propositions.sort((a, b) => b[1] - a[1]).slice(0, amount);
+
+    return propositions.sort((a, b) => a[1] - b[1]).slice(0, amount);
   }
 }
 

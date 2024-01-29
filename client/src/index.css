@@ -305,17 +305,17 @@ nav .logo-container .logo {
   background-position: center;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
 }
 
-.card h3 {
+.card h3, .dashboard .swipe-info {
   margin: 0;
-  color: #fff;
-}
-
-.dashboard .swipe-info {
-  position: absolute;
-  bottom: 0;
   padding: 10px;
+  width: 100%;
+  background: linear-gradient(45deg, rgb(254, 48, 114), rgb(255, 89, 64));
 }
 
 /* -------- Chat Container -------- */

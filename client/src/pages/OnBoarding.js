@@ -41,7 +41,6 @@ const OnBoarding = ({header}) => {
       })
       .then((data) => {
         if (data) {
-          console.log(data.user)
           const date = new Date(data.user.date_of_birth);
           const formattedDate = date.toISOString().split('T')[0];
           setFormData((prevState) => ({
@@ -89,7 +88,6 @@ const OnBoarding = ({header}) => {
       console.log("error");
     } else {
       if (header) {
-        console.log("ok");
         navigate("/dashboard");
       }
     }
