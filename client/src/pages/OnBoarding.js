@@ -89,11 +89,11 @@ const OnBoarding = ({header}) => {
       console.log("error");
     } else {
       if (header) {
+        console.log("ok");
         navigate("/dashboard");
       }
     }
   };
-  console.log(formData)
 
   const handleChange = async (e) => {
     if (e.target.type === "file") {

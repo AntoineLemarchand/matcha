@@ -18,7 +18,6 @@ router.put("/:id", imageUpload, async (req, res) => {
     const images = req.files;
     for (const i in images) {
       if (images[i]) {
-        console.log(images[i])
         req.body['image_' + i] = `/images/${images[i].filename}`;
       }
     }

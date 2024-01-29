@@ -62,7 +62,6 @@ wss.on('connection', (ws, req) => {
     ws.close();
     return
   }
-  const propositions = (new User()).getPropositions(userId, 10);
   ws.on('message', (message) => {
     const data = JSON.parse(message.toString());
     if (!data.action) return;
@@ -74,7 +73,9 @@ wss.on('connection', (ws, req) => {
         ws.send('not implemented yet');
         break;
       case 'propositions':
-        ws.send(JSON.stringify({ action: 'propositions', data: propositions }));
+        (new User()).getPropositions(userId, 10).then((propositions) => {
+          ws.send(JSON.stringify({ action: 'propositions', data: propositions }));
+        });
         break;
     }
   });
