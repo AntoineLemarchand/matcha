@@ -18,3 +18,22 @@ CREATE TABLE IF NOT EXISTS users (
   initialized BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (id)
 );
+
+CREATE TABLE IF NOT EXISTS swipes (
+  id INT NOT NULL AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  swiped_id INT NOT NULL,
+  swiped_right BOOLEAN NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (swiped_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS matches (
+  id INT NOT NULL AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  match_id INT NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (match_id) REFERENCES users(id)
+);

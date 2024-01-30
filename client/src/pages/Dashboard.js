@@ -1,5 +1,5 @@
 import TinderCard from "react-tinder-card";
-import { useEffect, useState } from "react";
+import { createRef, useEffect, useMemo, useState } from "react";
 import ChatContainer from "../components/ChatContainer";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,18 +10,20 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
   const [propositions, setPropositions] = useState([]);
-  const [currentProposition, setCurrentProposition] = useState(null);
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const cardRef = useMemo(() =>
+    Array(propositions.length)
+      .fill(0)
+      .map(() => createRef()),
+    [propositions.length]);
 
-  const { sendMessage, lastMessage, readyState } = useWebSocket(
+  const { sendMessage } = useWebSocket(
     process.env.REACT_APP_WS_URL + '/connection', {
-    onOpen: () => console.log("ws connection opened"),
-    onClose: () => console.log("ws connection closed"),
     onError: (event) => console.error(event),
     onMessage: handleReceiveMessage,
   })
 
   const getImageURL = (imageBuffer) => {
-    // if image buffer is a relative path render from static backend
     if (imageBuffer.startsWith('/')) {
       return `${process.env.REACT_APP_API_URL}${imageBuffer}`;
     } else {
@@ -33,7 +35,13 @@ const Dashboard = () => {
     const data = JSON.parse(event.data);
     switch (data.action) {
       case 'propositions':
-        loadPropositions(data.data)
+        if (propositions.length > currentIdx) return;
+        const newPropositions = [...propositions, ...data.data];
+        console.log(newPropositions);
+        //remove already swiped propositions
+        newPropositions.splice(0, currentIdx);
+        setPropositions(newPropositions);
+        setCurrentIdx(0);
         break;
       default:
         console.log(data);
@@ -73,37 +81,16 @@ const Dashboard = () => {
     document.querySelector('.chat-container').style.right = '0%'
   }
 
-  const [lastDirection, setLastDirection] = useState();
-
-  const loadPropositions = (newPropositions) => {
-    if (newPropositions.length === 0) return;
-    const propositionsCopy = [...newPropositions];
-    const newProposition = propositionsCopy.pop();
-    fetch(`${process.env.REACT_APP_API_URL}/user/${newProposition[0]}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    }).then((response) => {
-      if (response.status === 200) {
-        const currentUser = response.json().then((jsonResponse) =>{
-          setCurrentProposition(jsonResponse);
-          setPropositions(newPropositions);
-          console.log(newPropositions);
-        });
-      } else {
-        navigate("/")
-      }
-    })
+  const swipe = async (dir) => {
+    cardRef[currentIdx].current.swipe(dir);
   }
 
-  const swiped = (direction, nameToDelete) => {
-    setLastDirection(direction);
-  };
-
-  const outOfFrame = (name) => {
-    console.log(lastDirection);
+  const swiped = (direction) => {
+    console.log(direction);
+    sendMessage(JSON.stringify({ action: 'swipe', data: { direction, user_id: propositions[currentIdx].id } }))
+    if (currentIdx >= propositions.length - 2) {
+      sendMessage(JSON.stringify({ action: 'propositions' }))
+    }
   };
 
   return (
@@ -117,20 +104,27 @@ const Dashboard = () => {
         </div>
         <div className="card-container">
           {
-            currentProposition &&
-            <TinderCard className="swipe">
-                <div className="card" style={{backgroundImage: `url(${getImageURL(currentProposition.image_0)})`}}>
-                  <h3>{getImageURL(currentProposition.first_name)}</h3>
-                  <p className="swipe-info">{currentProposition.about}</p>
-                </div>
-            </TinderCard>
+            propositions.map((proposition, index) =>
+              <TinderCard
+                  ref={cardRef[index]}
+                  className="swipe"
+                  onSwipe={(dir) => swiped(dir)}
+                  preventSwipe={["up", "down"]}
+                  key={index}
+                >
+                  <div className="card" style={{backgroundImage: `url(${getImageURL(proposition.image_0)})`}}>
+                    <h3>{getImageURL(proposition.first_name)}</h3>
+                    <p className="swipe-info">{proposition.about}</p>
+                  </div>
+              </TinderCard>
+            )
           }
         </div>
         <div className="bottom-bar">
-          <button onClick={openChat}>
+          <button onClick={() => swipe("left")}>
             <FontAwesomeIcon icon={faClose}/>
           </button>
-          <button onClick={openChat}>
+          <button onClick={() => swipe("right")}>
             <FontAwesomeIcon icon={faHeart}/>
           </button>
         </div>

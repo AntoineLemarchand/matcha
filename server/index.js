@@ -70,7 +70,9 @@ wss.on('connection', (ws, req) => {
         ws.send('not implemented yet');
         break;
       case 'swipe':
-        ws.send('not implemented yet');
+        const swipedUserId = data.data.user_id;
+        const direction = data.data.direction;
+        (new User()).swipe(userId, swipedUserId, direction);
         break;
       case 'propositions':
         (new User()).getPropositions(userId, 10).then((propositions) => {

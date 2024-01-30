@@ -1,3 +1,5 @@
+import Swipe from '../swipe/swipe.model.js';
+import Match from '../match/match.model.js';
 import bcrypt from 'bcrypt';
 import db from '../db.js';
 
@@ -92,16 +94,24 @@ class User {
   }
 
   async getPropositions(id, amount) {
-    const description = (await this.getFromId(id)).about ?? "";
+    const currentUser = await this.getFromId(id);
+    const description = currentUser.about ?? "";
     const tagRegex = /#(\w+)/g;
     const otherUsers = await this.getAll();
-    const propositions = []
+    let propositions = []
 
     let userHashtags = description.match(tagRegex) ?? [];
     if (typeof userHashtags === 'string') userHashtags = [userHashtags];
 
     for (const user of otherUsers) {
-      if (user.id === id) continue;
+      const hasSwiped = await Swipe.hasSwiped(id, user.id);
+      const hasMatched = await Match.hasMatched(id, user.id);
+      if (user.id === id
+        || hasSwiped
+        || hasMatched
+        || currentUser.gender_identity != user.gender_interest
+        || currentUser.gender_interest != user.gender_identity
+      ) continue;
 
       const userDescription = user.about ?? "";
       const otherHashtags = userDescription.match(tagRegex) ?? [];
@@ -111,10 +121,22 @@ class User {
       for (const hashtag of userHashtags) {
         if (otherHashtags.includes(hashtag)) count++;
       }
-      propositions.push([user.id, count]);
+      propositions.push([user, count]);
     }
 
-    return propositions.sort((a, b) => a[1] - b[1]).slice(0, amount);
+    propositions = propositions.sort((a, b) => a[1] - b[1]).slice(0, amount);
+    return propositions.map((proposition) => proposition[0]);
+  }
+
+  async swipe(userId, swipedUserId, direction) {
+    const sql = `INSERT INTO swipes (user_id, swiped_user_id, direction) VALUES (?, ?, ?)`;
+    const params = [userId, swipedUserId, direction];
+    try {
+      const result = await db.query(sql, params);
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
 }
 
