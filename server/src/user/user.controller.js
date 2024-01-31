@@ -1,9 +1,6 @@
 import User from './user.model.js';
-import jwt from 'jsonwebtoken';
 
-async function getAll(req, res) {
-  const id = jwt.verify(req.cookies.token, process.env.JWT_SECRET).id;
-  if (!id) return res.status(401).json({ message: "Unauthorized" });
+async function getAll(id, res) {
   const user = new User();
   try {
     const result = await user.getFromId(id);
@@ -15,8 +12,6 @@ async function getAll(req, res) {
 }
 
 async function getById(req, res) {
-  const id = jwt.verify(req.cookies.token, process.env.JWT_SECRET).id;
-  if (!id) return res.status(401).json({ message: "Unauthorized" });
   const user = new User();
   try {
     const result = await user.getFromId(req.params.id);
@@ -28,8 +23,6 @@ async function getById(req, res) {
 }
 
 async function update(req, res) {
-  const id = jwt.verify(req.cookies.token, process.env.JWT_SECRET).id;
-  if (!id || !req.params.id) return res.status(401).json({ message: "Unauthorized" });
   const user = new User();
   try {
     if (req.body.id) delete req.body.id;
@@ -40,4 +33,15 @@ async function update(req, res) {
   }
 }
 
-export default { getAll, getById, update }
+async function getPropositions(id, res) {
+  const user = await (new User()).getFromId(id);
+  try {
+    if (!user.initialized) return res.status(400).json({ message: "User incomplete" });
+    const result = await (new User).getPropositions(user.id, 10);
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export default { getAll, getById, update, getPropositions}

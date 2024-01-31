@@ -5,9 +5,7 @@ import authRouter from './src/auth/auth.router.js';
 import initTables from './db/init-db.js';
 import cookies from 'cookie-parser';
 import http from 'http';
-import { WebSocketServer } from 'ws';
-import jwt from 'jsonwebtoken';
-import User from './src/user/user.model.js';
+import setupWss from './src/wss.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -41,51 +39,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message, stack: err.stack });
 });
 
-const wss = new WebSocketServer({ server });
-
-wss.on('connection', (ws, req) => {
-  if (!req.headers.cookie) {
-    ws.send(JSON.stringify({ action: 'logout' }));
-    ws.close();
-    return
-  }
-  const cookies = req.headers.cookie.split(';');
-  const token = cookies.find(cookie => cookie.includes('token')).split('=')[1];
-  if (!token) {
-    ws.send(JSON.stringify({ action: 'logout' }));
-    ws.close();
-    return
-  }
-  const userId = jwt.verify(token, process.env.JWT_SECRET).id;
-  if (!userId) {
-    ws.send(JSON.stringify({ action: 'logout' }));
-    ws.close();
-    return
-  }
-  ws.on('message', (message) => {
-    const data = JSON.parse(message.toString());
-    if (!data.action) return;
-    switch(data.action) {
-      case 'chat':
-        ws.send('not implemented yet');
-        break;
-      case 'swipe':
-        const swipedUserId = data.data.user_id;
-        const direction = data.data.direction;
-        (new User()).swipe(userId, swipedUserId, direction);
-        break;
-      case 'propositions':
-        (new User()).getPropositions(userId, 10).then((propositions) => {
-          ws.send(JSON.stringify({ action: 'propositions', data: propositions }));
-        });
-        break;
-    }
-  });
-
-  ws.on('error', (error) => {
-    console.error('WebSocket error:', error);
-  });
-});
+setupWss(server);
 
 server.listen(process.env.SERVER_PORT, () => {
   console.log(`Server running on port ${process.env.SERVER_PORT}`);

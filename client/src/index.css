@@ -161,6 +161,62 @@ nav .logo-container .logo {
   font-size: 17px;
 }
 
+#profile {
+  height: 100%;
+}
+
+#profile img {
+  width: 100%;
+}
+
+#profile .tagList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+#profile .tag {
+  height: 2rem;
+  margin-bottom: .5rem;
+  width: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(45deg, rgb(254, 48, 114), rgb(255, 89, 64));
+  border-radius: 1rem;
+  color: rgb(255, 255, 255);
+}
+
+
+#profile .action, .top-bar {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  display: flex;
+  height: 3rem;
+  justify-content: space-evenly;
+  background: linear-gradient(45deg, rgb(254, 48, 114), rgb(255, 89, 64));
+  margin-top: auto;
+}
+
+.dashboard-content {
+  height: calc(100vh - 6rem);
+  margin-top: 3rem;
+  overflow-y: auto;
+}
+
+.top-bar {
+  top: 0;
+  bottom: auto;
+  justify-content: start;
+}
+
+#profile button {
+  border: solid rgb(226, 115, 115) 2px;
+  width: 25%;
+  border-radius: 30px;
+}
+
 /*-------- OnBoarding Page --------*/
 
 .onboarding form {
@@ -181,7 +237,6 @@ nav .logo-container .logo {
 .onboarding form section > div {
   display: flex;
   flex-direction: column;
-  width: 40%;
   padding: 1rem;
 }
 
@@ -259,117 +314,97 @@ nav .logo-container .logo {
 .dashboard {
   display: flex;
   justify-content: space-between;
+  overflow: hidden;
 }
 
-.dashboard .swipe-container {
+.main-container {
   width: 100%;
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  overflow: hidden;
 }
 
-.swipe-container .top-bar, .swipe-container .bottom-bar {
-  display: flex;
-  align-items: center;
-  padding: .5rem;
-  padding-left: 2rem;
-}
-
-.swipe-container .top-bar button, .swipe-container .bottom-bar button {
-  border: solid rgb(226, 115, 115) 2px;
-}
-
-.swipe-container .bottom-bar {
-  justify-content: space-evenly;
-}
-
-.swipe {
-  position: absolute;
+.main-container table {
   width: 100%;
-  height: 100%;
+  overflow-y: auto;
+  border-collapse: collapse;
 }
 
-.dashboard .card-container {
-  width: 80%;
-  height: 80%;
-  position: relative;
+.main-container table tr {
+  height: 7rem;
+  background: rgb(226, 115, 115);
+  text-align: center;
+  margin-bottom: .5rem;
 }
 
-.card {
-  cursor: pointer;
-  background-color: #fff;
-  border-radius: 30px;
-  background-size: cover;
-  background-position: center;
+.main-container table tr td:first-child {
+  width: 40%;
+}
+
+.main-container table tr td:last-child {
+  width: 10%;
+  text-align: right;
+}
+
+.main-container table tr td img {
+  width: 7rem;
+}
+
+
+/* -------- MENU -------- */
+
+.menu-container {
   width: 100%;
-  height: 100%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-}
-
-.card h3, .dashboard .swipe-info {
-  margin: 0;
-  padding: 10px;
-  width: 100%;
-  background: linear-gradient(45deg, rgb(254, 48, 114), rgb(255, 89, 64));
-}
-
-/* -------- Chat Container -------- */
-
-.chat-container {
-  background-color: rgb(255, 255, 255);
-  width: 30%;
   text-align: left;
   z-index: 1;
-  position: absolute;
+  position: fixed;
   right: 100%;
   width: 100%;
   height: 100%;
   transition: right .3s ease-in-out;
+  background: rgb(255, 255, 255);
 }
 
-.chat-container .chat-container-header {
-  height: 100px;
-  display: flex;
-  flex-direction: column;
-  justify-content: around;
-  align-items: center;
-}
-
-.chat-container-header-account {
-  width: 100%;
+.menu-header {
   background: linear-gradient(45deg, rgb(254, 48, 114), rgb(255, 89, 64));
+  height: 3rem;
+  width: 100%;
   display: flex;
   justify-content: space-between;
-  position: relative;
-}
-
-.chat-container .option {
-  cursor: pointer;
-  border: none;
-  background-color: rgb(255, 255, 255);
-  border-bottom: solid 4px rgb(243, 33, 33);
-  font-size: 20px;
-  margin: 2px;
-  padding: 10px;
-  border-radius: 0px;
-}
-
-.chat-container .option.disabled {
-  border-bottom: solid 4px rgb(187, 187, 187);
-}
-
-.chat-container .icons,
-.chat-container .profile {
-  display: flex;
   align-items: center;
   color: rgb(255, 255, 255);
 }
+
+.menu-header > div {
+  display: flex;
+  align-items: center;
+}
+
+.menu-header img {
+  height: 3rem;
+  margin-right: 1rem;
+}
+
+.menu-container ul {
+  height: calc(100vh - 3rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  list-style: none;
+  font-size: 2rem;
+}
+
+.menu-container ul li {
+  cursor: pointer;
+  background: linear-gradient(45deg, rgb(254, 48, 114), rgb(255, 89, 64));
+  padding: 2rem;
+  width: 40%;
+  text-align: center;
+  border-radius: 2rem;
+  color: rgb(255, 255, 255);
+}
+
+/* -------- Chat Container -------- */
+
 
 button {
   width: 2.5rem;
@@ -385,23 +420,6 @@ button {
   cursor: pointer;
 }
 
-.chat-container-options {
-  display: flex;
-  justify-content: space-evenly;
-  width: 100%;
-}
-
-.img-container {
-  width: 30px;
-  height: 30px;
-  border-radius: 15%;
-  overflow: hidden;
-  margin: 10px;
-}
-
-.img-container img {
-  width: 100%;
-}
 
 /* -------- Chat Display -------- */
 

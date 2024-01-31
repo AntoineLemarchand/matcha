@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Nav from "../components/Nav";
 import ImageUpload from "../components/ImageUpload";
+import sendHttp from "../utils/sendHttp";
 
-const OnBoarding = ({header}) => {
+const OnBoarding = () => {
   const navigate = useNavigate();
   const [id, setId] = useState(0);
   const [formData, setFormData] = useState({
@@ -25,21 +26,7 @@ const OnBoarding = ({header}) => {
   });
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/auth/verify`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          navigate("/");
-        }
-      })
-      .then((data) => {
+    sendHttp('/auth/verify', 'GET').then((data) => {
         if (data) {
           const date = new Date(data.user.date_of_birth);
           const formattedDate = date.toISOString().split('T')[0];
@@ -75,23 +62,13 @@ const OnBoarding = ({header}) => {
       }
     }
 
-    const dataFetch = async () => {
-      return await fetch(`/api/user/${id}`, {
-        method: "PUT",
-        credentials: "include",
-        body: body,
-      });
-    };
-
-    const data = await dataFetch();
-    if (!data.ok) {
-      console.log("error");
-    } else {
-      if (header) {
-        navigate("/dashboard");
-      }
-    }
-  };
+    sendHttp(`/user/${id}`, "PUT", body, {})
+      .then((data) => {
+          navigate("/dashboard");
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
 
   const handleChange = async (e) => {
     if (e.target.type === "file") {
@@ -118,13 +95,9 @@ const OnBoarding = ({header}) => {
 
   return (
     <>
-      {
-        header !== 0 && 
-          <Nav minimal={true} setShowModal={() => {}} showModal={false} />
-      }
-
+      <Nav minimal={true} setShowModal={() => {}} showModal={false} />
       <div className="onboarding">
-        {header !== 0 && <h2>Create account</h2>}
+        <h2>Create account</h2>
         <form onSubmit={handleSubmit}>
           <section>
             <div>

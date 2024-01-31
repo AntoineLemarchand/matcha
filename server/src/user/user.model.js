@@ -93,7 +93,7 @@ class User {
     }
   }
 
-  async getPropositions(id, amount) {
+  async getPropositions(id, amount = 10) {
     const currentUser = await this.getFromId(id);
     const description = currentUser.about ?? "";
     const tagRegex = /#(\w+)/g;
@@ -126,17 +126,6 @@ class User {
 
     propositions = propositions.sort((a, b) => a[1] - b[1]).slice(0, amount);
     return propositions.map((proposition) => proposition[0]);
-  }
-
-  async swipe(userId, swipedUserId, direction) {
-    const sql = `INSERT INTO swipes (user_id, swiped_user_id, direction) VALUES (?, ?, ?)`;
-    const params = [userId, swipedUserId, direction];
-    try {
-      const result = await db.query(sql, params);
-      return result;
-    } catch (error) {
-      throw error;
-    }
   }
 }
 
