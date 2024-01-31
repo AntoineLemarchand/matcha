@@ -51,7 +51,7 @@ const ChatContainer = ({user}) => {
         </div>
       </div>
       <ul>
-        <li onClick={()=>goTo('')}>Profiles</li>
+        <li onClick={()=>goTo('')}>Discover</li>
         <li onClick={()=>goTo('')}>Chat</li>
         <li onClick={()=>goTo('')}>Profile history</li>
       </ul>

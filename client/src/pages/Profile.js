@@ -34,7 +34,7 @@ const Profile = () => {
           { id && <button>Message</button>}
           { id && <button>Block</button>}
           { id && <button>report</button>}
-          { !id && <button>edit</button>}
+          { !id && <button onClick={()=>navigate('/dashboard/edit')}>edit</button>}
         </div>
     </div>
   );

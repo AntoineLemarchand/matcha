@@ -169,22 +169,28 @@ nav .logo-container .logo {
   width: 100%;
 }
 
-#profile .tagList {
+.tagList {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
 }
 
-#profile .tag {
-  height: 2rem;
+.tag {
+  height: 4rem;
   margin-bottom: .5rem;
-  width: 5rem;
+  width: 7rem;
+  padding-inline: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
   background: linear-gradient(45deg, rgb(254, 48, 114), rgb(255, 89, 64));
   border-radius: 1rem;
   color: rgb(255, 255, 255);
+}
+
+.tag button {
+  height: 2rem;
+  width: 2rem;
 }
 
 
@@ -250,6 +256,10 @@ nav .logo-container .logo {
 
 .onboarding form label {
   margin: 10px 0;
+}
+
+.onboarding img {
+  width: 100%;
 }
 
 .onboarding form .multiple-input-container {

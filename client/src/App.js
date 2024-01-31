@@ -3,6 +3,7 @@ import Dashboard from "./pages/Dashboard";
 import OnBoarding from "./pages/OnBoarding";
 import Profile from "./pages/Profile";
 import Profiles from "./pages/Profiles";
+import ProfileEdit from "./pages/ProfileEdit";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 const App = () => {
@@ -15,6 +16,7 @@ const App = () => {
           <Route index element={<Profiles />} />
           <Route path="profile" element={<Profile />} />
           <Route path="profile/:id" element={<Profile />} />
+          <Route path="edit" element={<ProfileEdit />} />
         </Route>
       </Routes>
     </BrowserRouter>
