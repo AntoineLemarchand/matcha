@@ -11,7 +11,13 @@ export default function setupWss(server) {
       return
     }
     const cookies = req.headers.cookie.split(';');
-    const token = cookies.find(cookie => cookie.includes('token')).split('=')[1];
+    const tokenCookie = cookies.find(cookie => cookie.includes('token'));
+    if (!tokenCookie) {
+      ws.send(JSON.stringify({ action: 'logout' }));
+      ws.close();
+      return
+    }
+    const token = tokenCookie.split('=')[1];
     if (!token) {
       ws.send(JSON.stringify({ action: 'logout' }));
       ws.close();

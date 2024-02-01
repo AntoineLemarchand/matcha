@@ -338,26 +338,20 @@ nav .logo-container .logo {
   border-collapse: collapse;
 }
 
+.main-container table, .main-container th, .main-container td {
+  border: 1px solid rgb(226, 155, 155);
+}
+
 .main-container table tr {
   height: 7rem;
-  background: rgb(226, 115, 115);
+  background: rgb(255, 200, 200);
   text-align: center;
   margin-bottom: .5rem;
 }
 
-.main-container table tr td:first-child {
-  width: 40%;
+.main-container table img {
+  width: 10rem;
 }
-
-.main-container table tr td:last-child {
-  width: 10%;
-  text-align: right;
-}
-
-.main-container table tr td img {
-  width: 7rem;
-}
-
 
 /* -------- MENU -------- */
 

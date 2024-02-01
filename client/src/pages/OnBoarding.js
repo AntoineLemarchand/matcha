@@ -16,7 +16,8 @@ const OnBoarding = () => {
     show_gender: 0,
     gender_identity: "man",
     gender_interest: "woman",
-    about: "",
+    biography: "",
+    tags: "",
     image_0: "",
     image_1: "",
     image_2: "",
@@ -231,16 +232,16 @@ const OnBoarding = () => {
               <label htmlFor="about">About me</label>
               <textarea
                 id="about"
-                name="about"
+                name="biography"
                 placeholder="I like long walks..."
                 required={true}
-                value={formData.about ?? ''}
+                value={formData.biography ?? ''}
                 onChange={handleChange}
               />
             </div>
             <div>
               <label htmlFor="tags">About me</label>
-              <Interests tags={formData.tags.split('|').filter((tag) => tag != '')} onChange={handleChange} edit="true"/>
+              <Interests tags={(formData.tags ?? '').split('|').filter((tag) => tag != '')} onChange={handleChange} edit="true"/>
             </div>
           </section>
 
