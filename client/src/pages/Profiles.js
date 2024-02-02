@@ -7,15 +7,115 @@ import {
   getCoreRowModel,
   createColumnHelper,
   getSortedRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFacetedMinMaxValues,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
+import {
+  rankItem,
+} from "@tanstack/match-sorter-utils";
+
+function DebouncedInput({ value: initialValue, onChange, debounce = 500, ...props }) {
+  const [value, setValue] = React.useState(initialValue)
+
+  React.useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
+
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      onChange(value)
+    }, debounce)
+
+    return () => clearTimeout(timeout)
+  }, [value])
+
+  return (
+    <input {...props} value={value} onChange={e => setValue(e.target.value)} />
+  )
+}
+
+function Filter({ column, table }) {
+  const firstValue = table
+    .getPreFilteredRowModel()
+    .flatRows[0]?.getValue(column.id)
+
+  const columnFilterValue = column.getFilterValue()
+
+  const sortedUniqueValues = React.useMemo(
+    () =>
+      typeof firstValue === 'number'
+        ? []
+        : Array.from(column.getFacetedUniqueValues().keys()).sort(),
+    [column.getFacetedUniqueValues()]
+  )
+
+  return typeof firstValue === 'number' ? (
+    <div>
+      <div className="flex space-x-2">
+        <DebouncedInput
+          type="number"
+          min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
+          max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
+          value={(columnFilterValue)?.[0] ?? ''}
+          onChange={value =>
+            column.setFilterValue((old) => [value, old?.[1]])
+          }
+          placeholder={`Min ${
+            column.getFacetedMinMaxValues()?.[0]
+              ? `(${column.getFacetedMinMaxValues()?.[0]})`
+              : ''
+          }`}
+          className="w-24 border shadow rounded"
+        />
+        <DebouncedInput
+          type="number"
+          min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
+          max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
+          value={(columnFilterValue)?.[1] ?? ''}
+          onChange={value =>
+            column.setFilterValue((old) => [old?.[0], value])
+          }
+          placeholder={`Max ${
+            column.getFacetedMinMaxValues()?.[1]
+              ? `(${column.getFacetedMinMaxValues()?.[1]})`
+              : ''
+          }`}
+          className="w-24 border shadow rounded"
+        />
+      </div>
+      <div className="h-1" />
+    </div>
+  ) : (
+    <>
+      <datalist id={column.id + 'list'}>
+        {sortedUniqueValues.slice(0, 5000).map((value) => (
+          <option value={value} key={value} />
+        ))}
+      </datalist>
+      <DebouncedInput
+        type="text"
+        value={(columnFilterValue ?? '')}
+        onChange={value => column.setFilterValue(value)}
+        placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
+        className="w-36 border shadow rounded"
+        list={column.id + 'list'}
+      />
+      <div className="h-1" />
+    </>
+  )
+}
 
 const Profiles = () => {
 
   const navigate = useNavigate();
 
-  const [sorting, setSorting] = useState([])
-
   const [propositions, setPropositions] = useState([]);
+
+  const [sorting, setSorting] = useState([])
+  const [columnFilters, setColumnFilters] = useState([])
+  const [globalFilter, setGlobalFilter] = useState('')
 
   const getImageURL = (imageBuffer) => {
     if (imageBuffer.startsWith('/')) {
@@ -49,50 +149,79 @@ const Profiles = () => {
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
 
+  const columns = [
+    createColumnHelper().accessor('image_0', {
+      header: 'Image',
+      enableColumnFilter: false,
+      cell: (Info) => <img src={getImageURL(Info.getValue())} alt="profile" />,
+    }),
+    createColumnHelper().accessor(row => `${row.first_name} ${row.last_name}`, {
+      header: 'Name',
+      cell: (Info) => <span>{Info.getValue()}</span>,
+    }),
+    createColumnHelper().accessor(row => getAge(row.date_of_birth), {
+      id: 'age',
+      header: 'Age',
+      cell: (Info) => <span>{Info.getValue()}</span>,
+    }),
+    createColumnHelper().accessor(row => row.location ?? 0, {
+      header: 'Distance',
+      cell: (Info) => <span>{Info.getValue()}</span>,
+    }),
+    createColumnHelper().accessor(row => row.fame ?? 0, {
+      header: 'Fame',
+      cell: (Info) => <span>{Info.getValue()}</span>,
+    }),
+    createColumnHelper().accessor(row => row.fame ?? 0, {
+      header: 'Tags in common',
+      cell: (Info) => <span>{Info.getValue()}</span>,
+    }),
+  ]
+
+  const fuzzyFilter = (row, columnId, value, addMeta) => {
+    const itemRank = rankItem(row.getValue(columnId), value)
+
+    addMeta({
+      itemRank,
+    })
+
+    return itemRank.passed
+  }
+
   const tableInstance = useReactTable({
-    columns: [
-      createColumnHelper().accessor('image_0', {
-        header: 'Image',
-        cell: (Info) => <img src={getImageURL(Info.getValue())} alt="profile" />,
-        footer: 'Image',
-      }),
-      createColumnHelper().accessor('first_name', {
-        header: 'Name',
-        cell: (Info) => <span>{Info.getValue()}</span>,
-        footer: 'Name',
-      }),
-      createColumnHelper().accessor('date_of_birth', {
-        header: 'Age',
-        cell: (Info) => <span>{getAge(Info.getValue())}</span>,
-        footer: 'Age',
-      }),
-      createColumnHelper().accessor('distance', {
-        header: 'Distance',
-        cell: (Info) => <span>TODO</span>,
-        footer: 'Distance',
-      }),
-      createColumnHelper().accessor('fame', {
-        header: 'Fame',
-        cell: (Info) => <span>TODO</span>,
-        footer: 'Fame',
-      }),
-      createColumnHelper().accessor('common_tags', {
-        header: 'Tags in common',
-        cell: (Info) => <span>TODO</span>,
-        footer: 'Tags in common',
-      }),
-    ],
+    columns,
     data: propositions,
     getCoreRowModel: getCoreRowModel(),
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
     state: {
       sorting,
+      columnFilters,
     },
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onColumnFilterChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: fuzzyFilter,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    getFacetedMinMaxValues: getFacetedMinMaxValues(),
   });
 
   return (
     <div className="p-2">
+      <div>
+        <DebouncedInput
+          value={globalFilter ?? ''}
+          onChange={value => setGlobalFilter(String(value))}
+          className="p-2 font-lg shadow border border-block"
+          placeholder="Search all columns..."
+        />
+      </div>
       <table>
         <thead>
           {tableInstance.getHeaderGroups().map(headerGroup => (
@@ -101,65 +230,47 @@ const Profiles = () => {
                 <th key={header.id} colSpan={header.colSpan}>
                   {header.isPlaceholder ? null : (
                     <div
-                      {...{
-                        className: header.column.getCanSort()
-                          ? 'cursor-pointer select-none'
-                          : '',
-                        onClick: header.column.getToggleSortingHandler(),
-                      }}
+                      style={header.column.getCanSort() ? { cursor: 'pointer', userSelect: 'none' } : {}}
+                      onClick={header.column.getToggleSortingHandler()}
                     >
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext()
                       )}
                       {{
-                        asc: ' 🔼',
-                        desc: ' 🔽',
-                      }[header.column.getIsSorted()] ?? null}
+                        asc: ' ↑',
+                        desc: ' ↓',
+                      }[header.column.getIsSorted()] ?? ' ~'}
                     </div>
                   )}
-                </th>
+                  {header.column.getCanFilter() ? (
+                    <div>
+                      <Filter column={header.column} table={tableInstance} />
+                    </div>
+                  ) : null}
+                  </th>
               ))}
             </tr>
           ))}
         </thead>
         <tbody>
-          {tableInstance
-            .getRowModel()
-            .rows.slice(0, 10)
-            .map(row => {
-              return (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map(cell => {
-                    return (
-                      <td key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    )
-                  })}
-                </tr>
-              )
-            })}
+          {tableInstance.getRowModel().rows.map(row => {
+            return (
+              <tr key={row.id}>
+                {row.getVisibleCells().map(cell => {
+                  return (
+                    <td key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  )
+                })}
+              </tr>
+            )
+          })}
         </tbody>
-        <tfoot>
-          {tableInstance.getFooterGroups().map(footerGroup => (
-            <tr key={footerGroup.id}>
-              {footerGroup.headers.map(header => (
-                <th key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                      header.column.columnDef.footer,
-                      header.getContext()
-                    )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </tfoot>
       </table>
       <div className="h-4" />
     </div>
