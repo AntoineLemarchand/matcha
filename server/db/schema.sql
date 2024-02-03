@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
   gender_interest VARCHAR(255),
   matches TEXT,
   biography TEXT,
-  tags TEXT,
+  tags TEXT NOT NULL DEFAULT '',
   image_0 TEXT,
   image_1 TEXT,
   image_2 TEXT,
@@ -20,21 +20,39 @@ CREATE TABLE IF NOT EXISTS users (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS swipes (
+CREATE TABLE IF NOT EXISTS websocket_ids (
   id INT NOT NULL AUTO_INCREMENT,
   user_id INT NOT NULL,
-  swiped_id INT NOT NULL,
-  swiped_right BOOLEAN NOT NULL,
+  socket_id VARCHAR(255) NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (user_id) REFERENCES users(id),
-  FOREIGN KEY (swiped_id) REFERENCES users(id)
+  FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE IF NOT EXISTS matches (
+CREATE TABLE IF NOT EXISTS messages (
+  id INT NOT NULL AUTO_INCREMENT,
+  sender_id INT NOT NULL,
+  receiver_id INT NOT NULL,
+  message TEXT NOT NULL,
+  time_sent TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  FOREIGN KEY (sender_id) REFERENCES users(id),
+  FOREIGN KEY (receiver_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS likes (
   id INT NOT NULL AUTO_INCREMENT,
   user_id INT NOT NULL,
-  match_id INT NOT NULL,
+  liked_user_id INT NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (user_id) REFERENCES users(id),
-  FOREIGN KEY (match_id) REFERENCES users(id)
+  FOREIGN KEY (liked_user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS blocks (
+  id INT NOT NULL AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  blocked_user_id INT NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (blocked_user_id) REFERENCES users(id)
 );

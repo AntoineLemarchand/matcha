@@ -1,7 +1,6 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Nav from "../components/Nav";
 import ImageUpload from "../components/ImageUpload";
 import sendHttp from "../utils/sendHttp";
 import Interests from "../components/Interests";
@@ -253,7 +252,7 @@ const OnBoarding = () => {
             </div>
             <div>
               <label htmlFor="tags">About me</label>
-              <Interests tags={formData.tags.split('|').filter((tag) => tag != '')} onChange={handleChange} edit="true"/>
+              <Interests tags={formData.tags.split('|').filter((tag) => tag !== '')} onChange={handleChange} edit="true"/>
             </div>
           </section>
 

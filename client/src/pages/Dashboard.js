@@ -3,28 +3,28 @@ import ChatContainer from "../components/ChatContainer";
 import { useNavigate, Outlet } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import useWebSocket from "react-use-websocket";
+// import useWebSocket from "react-use-websocket";
 import sendHttp from "../utils/sendHttp";
 
-const Dashboard = ({content}) => {
+const Dashboard = () => {
 
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
-  const { sendMessage } = useWebSocket(
-    process.env.REACT_APP_WS_URL + '/connection', {
-    onError: (event) => console.error(event),
-    onMessage: handleReceiveMessage,
-  })
+  // const { sendMessage } = useWebSocket(
+  //   process.env.REACT_APP_WS_URL + '/connection', {
+  //   onError: (event) => console.error(event),
+  //   onMessage: handleReceiveMessage,
+  // })
 
-  function handleReceiveMessage(event) {
-    const data = JSON.parse(event.data);
-    switch (data.action) {
-      default:
-        console.log(data);
-        break;
-    }
-  }
+  // function handleReceiveMessage(event) {
+  //   const data = JSON.parse(event.data);
+  //   switch (data.action) {
+  //     default:
+  //       console.log(data);
+  //       break;
+  //   }
+  // }
 
   function openMenu() {
     if (user)
@@ -40,7 +40,7 @@ const Dashboard = ({content}) => {
           navigate("/onboarding")
       navigate("/");
     });
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="dashboard">

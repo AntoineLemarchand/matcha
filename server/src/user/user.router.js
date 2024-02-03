@@ -29,10 +29,10 @@ router.put("/:id", imageUpload, async (req, res) => {
   if (!id) return res.status(401).json({ message: "Unauthorized" });
   try {
     const images = req.files;
+
     for (const i in images) {
-      if (images[i]) {
-        req.body['image_' + i] = `/images/${images[i].filename}`;
-      }
+      const num = images[i].originalname.split('_')[1].split('.')[0];
+      req.body['image_' + num] = `/images/${images[i].filename}`;
     }
     delete req.body['uploadedImages'];
     await userController.update(req, res);

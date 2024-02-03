@@ -12,6 +12,10 @@ const Interests = ({edit, tags, onChange}) => {
     if (event.code === 'Space' || event.code === 'Enter' || event.code === 'Tab' || event.key === '|' || inputContent.length > 10) {
       setCurrentTags([...currentTags, inputContent])
       setInputContent('');
+      // trigger onChange
+      if (onChange) {
+        onChange({target: {name: 'tags', value: [...currentTags, inputContent].join('|')}});
+      }
     } else if (event.code === 'Backspace') {
       setInputContent('');
     } else if (event.key.length === 1) {
@@ -22,13 +26,12 @@ const Interests = ({edit, tags, onChange}) => {
   const removeTag = (idx) => {
     const newTags = [...currentTags];
     newTags.splice(idx, 1);
-    console.log(newTags);
     setCurrentTags(newTags);
   }
 
   return (
   <div>
-      {onChange && <input name="tags" type="hidden" onChange={onChange} value={currentTags.join('|')}/>}
+      {onChange && <input id="tagInput" name="tags" type="hidden" onChange={onChange} value={currentTags.join('|')}/>}
       <div className="tagList">
         { currentTags &&
           currentTags.map((tag, idx) =>

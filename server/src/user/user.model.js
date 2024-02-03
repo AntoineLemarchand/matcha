@@ -1,5 +1,3 @@
-import Swipe from '../swipe/swipe.model.js';
-import Match from '../match/match.model.js';
 import bcrypt from 'bcrypt';
 import db from '../db.js';
 
@@ -93,6 +91,34 @@ class User {
     }
   }
 
+  static async hasLiked(userId, otherUserId) {
+    const sql = `SELECT * FROM likes
+      WHERE user_id = ? AND liked_user_id = ?
+      `
+    const params = [userId, otherUserId];
+    try {
+      const result = await db.query(sql, params);
+      const ret = result[0] ? true : false
+      return ret;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async hasBlocked(userId, otherUserId) {
+    const sql = `SELECT * FROM blocks
+      WHERE user_id = ? AND blocked_user_id = ?
+      `
+    const params = [userId, otherUserId];
+    try {
+      const result = await db.query(sql, params);
+      const ret = result[0] ? true: false;
+      return ret;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getPropositions(id, amount = 10) {
     const currentUser = await this.getFromId(id);
     const description = currentUser.about ?? "";
@@ -104,11 +130,11 @@ class User {
     if (typeof userHashtags === 'string') userHashtags = [userHashtags];
 
     for (const user of otherUsers) {
-      const hasSwiped = await Swipe.hasSwiped(id, user.id);
-      const hasMatched = await Match.hasMatched(id, user.id);
+      const hasLiked = await User.hasLiked(id, user.id);
+      const hasBlocked = await User.hasBlocked(id, user.id);
       if (user.id === id
-        || hasSwiped
-        || hasMatched
+        || hasLiked
+        || hasBlocked
         || currentUser.gender_identity != user.gender_interest
         || currentUser.gender_interest != user.gender_identity
       ) continue;

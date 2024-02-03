@@ -161,12 +161,24 @@ nav .logo-container .logo {
   font-size: 17px;
 }
 
-#profile {
-  height: 100%;
-}
-
 #profile img {
   width: 100%;
+  flex-shrink: 0;
+  margin-right: 10px;
+  object-fit: contain;
+  user-select: none;
+}
+
+#profile .galery {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  width: 50%;
+  margin-inline: auto;
+}
+
+#profile .galery img {
+  scroll-snap-align: start;
 }
 
 .tagList {
@@ -205,6 +217,33 @@ nav .logo-container .logo {
   margin-top: auto;
 }
 
+#profile .action button {
+  height: 2.5rem;
+  width: 2.5rem;
+}
+
+.button-checkbox {
+  height: 2.05rem;
+  width: 2.05rem;
+  background: transparent;
+  border: .15rem solid white;
+  margin: auto 1.25rem;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button-checkbox:has(input:checked) {
+  background: white;
+  color: rgb(255, 89, 64);
+}
+
+.button-checkbox input {
+  display: none;
+}
+
 .dashboard-content {
   height: calc(100vh - 6rem);
   margin-top: 3rem;
@@ -221,6 +260,11 @@ nav .logo-container .logo {
   border: solid rgb(226, 115, 115) 2px;
   width: 25%;
   border-radius: 30px;
+}
+
+#profile button:disabled {
+  background: rgb(189, 180, 180);
+  color: rgb(100, 100, 100);
 }
 
 /*-------- OnBoarding Page --------*/
@@ -349,6 +393,10 @@ nav .logo-container .logo {
   margin-bottom: .5rem;
 }
 
+.main-container table tbody tr {
+  cursor: pointer;
+}
+
 .main-container table img {
   height: 7rem;
 }
@@ -394,13 +442,13 @@ nav .logo-container .logo {
   justify-content: space-evenly;
   align-items: center;
   list-style: none;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .menu-container ul li {
   cursor: pointer;
   background: linear-gradient(45deg, rgb(254, 48, 114), rgb(255, 89, 64));
-  padding: 2rem;
+  padding: 1.5rem;
   width: 40%;
   text-align: center;
   border-radius: 2rem;

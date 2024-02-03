@@ -213,10 +213,6 @@ const Profiles = () => {
 
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: fuzzyFilter,
-
-    debugTable: true,
-    debugHeader: true,
-    debugColumn: true,
   });
 
   return (
@@ -263,7 +259,9 @@ const Profiles = () => {
         <tbody>
           {tableInstance.getRowModel().rows.map(row => {
             return (
-              <tr key={row.id}>
+              <tr key={row.id}
+                onClick={() => navigate(`profile/${row.original.id}`)}
+              >
                 {row.getVisibleCells().map(cell => {
                   return (
                     <td key={cell.id}>

@@ -241,7 +241,7 @@ const OnBoarding = () => {
             </div>
             <div>
               <label htmlFor="tags">About me</label>
-              <Interests tags={(formData.tags ?? '').split('|').filter((tag) => tag != '')} onChange={handleChange} edit="true"/>
+              <Interests tags={formData.tags.split('|').filter((tag) => tag !== '')} onChange={handleChange} edit="true"/>
             </div>
           </section>
 
