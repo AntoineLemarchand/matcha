@@ -17,11 +17,19 @@ router.get("/propositions", async (req, res) => {
   await userController.getPropositions(id, res);
 });
 
+router.post('/action', async (req, res) => {
+  const id = jwt.verify(req.cookies.token, process.env.JWT_SECRET).id;
+  if (!id) return res.status(401).json({ message: "Unauthorized" });
+  const {action, user_id} = req.body;
+  if (!action || !user_id) return res.status(400).json({ message: "Bad request" });
+  await userController.action(id, user_id, action, res);
+});
+
 router.get("/:id", async (req, res) => {
   if (!req.cookies.token) return res.status(401).json({ message: "Unauthorized" });
   const id = jwt.verify(req.cookies.token, process.env.JWT_SECRET).id;
   if (!id) return res.status(401).json({ message: "Unauthorized" });
-  await userController.getById(req, res);
+  await userController.getById(id, req, res);
 });
 
 router.put("/:id", imageUpload, async (req, res) => {

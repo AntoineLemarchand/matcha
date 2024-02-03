@@ -215,6 +215,7 @@ nav .logo-container .logo {
   justify-content: space-evenly;
   background: linear-gradient(45deg, rgb(254, 48, 114), rgb(255, 89, 64));
   margin-top: auto;
+  z-index: 1;
 }
 
 #profile .action button {
@@ -233,11 +234,6 @@ nav .logo-container .logo {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.button-checkbox:has(input:checked) {
-  background: white;
-  color: rgb(255, 89, 64);
 }
 
 .button-checkbox input {
@@ -406,7 +402,7 @@ nav .logo-container .logo {
 .menu-container {
   width: 100%;
   text-align: left;
-  z-index: 1;
+  z-index: 2;
   position: fixed;
   right: 100%;
   width: 100%;
@@ -485,4 +481,34 @@ button {
   display: flex;
   flex-direction: column;
   padding: 20px;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+.notification {
+  position: fixed;
+  bottom: 2.4rem;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px 0;
+  animation: slideIn 0.3s ease-in-out;
+  transition: transform 0.3s ease-out;
+}
+
+.notification.success {
+  background: rgb(226, 255, 226);
+  color: rgb(0, 102, 0);
+}
+
+.notification.error {
+  background: rgb(255, 226, 226);
+  color: rgb(102, 0, 0);
 }

@@ -11,11 +11,15 @@ async function getAll(id, res) {
   }
 }
 
-async function getById(req, res) {
+async function getById(id, req, res) {
   const user = new User();
   try {
     const result = await user.getFromId(req.params.id);
     delete result.password;
+    if (id !== req.params.id) {
+      result.liked = await User.hasLiked(id, req.params.id);
+      result.blocked = await User.hasBlocked(id, req.params.id)
+    }
     return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -44,4 +48,32 @@ async function getPropositions(id, res) {
   }
 }
 
-export default { getAll, getById, update, getPropositions}
+async function action(id, user_id, action, res) {
+  const user = new User();
+  try {
+    switch (action) {
+      case 'like':
+        await user.like(id, user_id);
+        break;
+      case 'unlike':
+        await user.unlike(id, user_id);
+        break;
+      case 'block':
+        await user.block(id, user_id);
+        break;
+      case 'unblock':
+        await user.unblock(id, user_id);
+        break;
+      case 'report':
+        await user.report(id, user_id);
+        break;
+      default:
+        return res.status(400).json({ message: "Bad request" });
+    }
+    return res.status(200).json({ message: "Action done" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export default { getAll, getById, update, getPropositions, action}
