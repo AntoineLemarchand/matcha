@@ -49,6 +49,17 @@ async function getPropositions(id, res) {
   }
 }
 
+async function getLikes(id, res) {
+  const user = await (new User()).getFromId(id);
+  try {
+    if (!user.initialized) return res.status(400).json({ message: "User incomplete" });
+    const result = await (new User).getLikes(user.id, 10);
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
 async function action(id, user_id, action, res) {
   const user = new User();
   try {
@@ -77,4 +88,4 @@ async function action(id, user_id, action, res) {
   }
 }
 
-export default { getAll, getById, update, getPropositions, action}
+export default { getAll, getById, update, getPropositions, getLikes, action}

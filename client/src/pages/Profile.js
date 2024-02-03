@@ -23,8 +23,8 @@ const Profile = () => {
       setBlocked(data.blocked);
       setReported(data.reported);
     }).catch(() => {
-      navigate("/dashboard");
-    })
+        navigate("/dashboard");
+      })
   }, [id, navigate]);
 
   const sendAction = (action, event) => {
@@ -35,17 +35,18 @@ const Profile = () => {
       action,
       user_id: id
     }))
-    .then(() => {
-      if (action === 'like' || action === 'unlike') setLike(!like);
-      if (action === 'block' || action === 'unblock') setBlocked(!blocked);
-      if (action === 'report') setReported(true);
-      sendNotification(`Action performed: ${actionWord}`, 'success')
-    })
-    .catch(() => sendNotification(`Could not perform: ${actionWord}`, 'error'))
+      .then(() => {
+        if (action === 'like' || action === 'unlike') setLike(!like);
+        if (action === 'block' || action === 'unblock') setBlocked(!blocked);
+        if (action === 'report') setReported(true);
+        sendNotification(`Action performed: ${actionWord}`, 'success')
+      })
+      .catch(() => sendNotification(`Could not perform: ${actionWord}`, 'error'))
   };
 
   return user && (
     <div id="profile">
+      <div className="content">
         <div className="infos">
           <h1>{user.first_name} {user.last_name}</h1>
           <p>{user.biography}</p>
@@ -58,8 +59,9 @@ const Profile = () => {
           {user.image_3 && <ImagePreview image={user.image_3} />}
           {user.image_4 && <ImagePreview image={user.image_4} />}
         </div>
-        <div className="action">
-          { id &&
+      </div>
+      <div className="action">
+        { id &&
           <label className="button-checkbox" onClick={(event)=>sendAction(like ? 'unlike' : 'like', event)}
             style={like ? {
               background: 'white',
@@ -69,9 +71,9 @@ const Profile = () => {
             <input id="LikeCheckbox" type="checkbox" defaultChecked={like}/>
             <FontAwesomeIcon icon={faHeart}/>
           </label>
-          }
-          { id && <button disabled={!like}><FontAwesomeIcon icon={faMessage}/></button>}
-          { id &&
+        }
+        { id && <button disabled={!like} onClick={()=>navigate(`/dashboard/chat/${id}`)}><FontAwesomeIcon icon={faMessage}/></button>}
+        { id &&
           <label className="button-checkbox" onClick={(event)=>sendAction(blocked ? 'unblock' : 'block', event)}
             style={blocked ? {
               background: 'white',
@@ -81,10 +83,10 @@ const Profile = () => {
             <input id="LikeCheckbox" type="checkbox" defaultChecked={blocked}/>
             <FontAwesomeIcon icon={faBan}/>
           </label>
-          }
-          { id && <button disabled={reported} onClick={(event)=>sendAction('report', event)}><FontAwesomeIcon icon={faExclamation}/></button>}
-          { !id && <button onClick={()=>navigate('/dashboard/edit')}>edit</button>}
-        </div>
+        }
+        { id && <button disabled={reported} onClick={(event)=>sendAction('report', event)}><FontAwesomeIcon icon={faExclamation}/></button>}
+        { !id && <button onClick={()=>navigate('/dashboard/edit')}>edit</button>}
+      </div>
     </div>
   );
 }

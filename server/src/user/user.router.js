@@ -17,6 +17,12 @@ router.get("/propositions", async (req, res) => {
   await userController.getPropositions(id, res);
 });
 
+router.get("/likes", async (req, res) => {
+  const id = jwt.verify(req.cookies.token, process.env.JWT_SECRET).id;
+  if (!id) return res.status(401).json({ message: "Unauthorized" });
+  await userController.getLikes(id, res);
+});
+
 router.post('/action', async (req, res) => {
   const id = jwt.verify(req.cookies.token, process.env.JWT_SECRET).id;
   if (!id) return res.status(401).json({ message: "Unauthorized" });

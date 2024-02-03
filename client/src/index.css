@@ -161,6 +161,19 @@ nav .logo-container .logo {
   font-size: 17px;
 }
 
+#profile {
+  margin-top: 0;
+}
+
+#profile .content {
+  height: calc(100vh - 6rem);
+  overflow-y: auto;
+}
+
+#profile h1 {
+  margin-top: 0;
+}
+
 #profile img {
   width: 100%;
   flex-shrink: 0;
@@ -174,6 +187,7 @@ nav .logo-container .logo {
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   width: 50%;
+  heigth: 100%;
   margin-inline: auto;
 }
 
@@ -241,7 +255,7 @@ nav .logo-container .logo {
 }
 
 .dashboard-content {
-  height: calc(100vh - 6rem);
+  height: calc(100vh - 3rem);
   margin-top: 3rem;
   overflow-y: auto;
 }
@@ -471,16 +485,73 @@ button {
 
 /* -------- Chat Display -------- */
 
-.chat-display {
-  padding: 20px;
-  height: 60vh;
-  overflow-y: auto;
-}
-
-.chat-input {
+.chat-container {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+}
+
+.chat-container .header {
+  width: 100%;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, rgb(177, 33, 80), rgb(178, 62, 44));
+}
+
+.chat-container .header * {
+  margin-inline: .5rem;
+}
+
+
+.chat-container img {
+  height: 2.2rem;
+  width: 2.2rem;
+  object-fit: contain;
+  border-radius: 50%;
+  background: black;
+}
+
+.chat-container img.online {
+  border: .2rem solid rgb(0, 255, 0);
+}
+
+.chat-container img.offline {
+  border: .2rem solid rgb(255, 0, 0);
+}
+
+.chat-container .sendInput {
+  height: 3rem;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 0 1rem;
+  background: rgb(255, 255, 255);
+}
+
+.chat-container .sendInput input {
+  width: calc(100% - 3rem);
+  border: .2rem solid rgb(226, 155, 155);
+  border-radius: 1rem;
+  padding: 0;
+  height: 2rem;
+  font-size: 1rem;
+}
+
+.chat-container .sendInput button {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline: .25rem;
+  background: linear-gradient(45deg, rgb(254, 48, 114), rgb(255, 89, 64));
+  color: white;
+}
+
+.chat-container .body {
+  height: 100%;
 }
 
 @keyframes slideIn {

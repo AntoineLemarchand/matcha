@@ -170,6 +170,41 @@ class User {
     return propositions.map((proposition) => proposition[0]);
   }
 
+  async getLikes(id, amount = 10) {
+    const currentUser = await this.getFromId(id);
+    const description = currentUser.about ?? "";
+    const tagRegex = /#(\w+)/g;
+    const otherUsers = await this.getAll();
+    let propositions = []
+
+    let userHashtags = description.match(tagRegex) ?? [];
+    if (typeof userHashtags === 'string') userHashtags = [userHashtags];
+
+    for (const user of otherUsers) {
+      const hasLiked = await User.hasLiked(id, user.id);
+      const hasBlocked = await User.hasBlocked(id, user.id);
+      const hasReported = await User.hasReported(id, user.id);
+      if (user.id === id
+        || hasBlocked
+        || hasReported
+        || !hasLiked
+      ) continue;
+
+      const userDescription = user.about ?? "";
+      const otherHashtags = userDescription.match(tagRegex) ?? [];
+
+      if (typeof otherHashtags === 'string') otherHashtags = [otherHashtags];
+      let count = 0;
+      for (const hashtag of userHashtags) {
+        if (otherHashtags.includes(hashtag)) count++;
+      }
+      propositions.push([user, count]);
+    }
+
+    propositions = propositions.sort((a, b) => a[1] - b[1]).slice(0, amount);
+    return propositions.map((proposition) => proposition[0]);
+  }
+
   async like(userId, otherUserId) {
     const sql = `INSERT IGNORE INTO likes (user_id, liked_user_id) VALUES (?, ?)`;
     const params = [userId, otherUserId];
