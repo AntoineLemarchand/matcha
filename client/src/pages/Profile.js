@@ -14,12 +14,14 @@ const Profile = () => {
   const [user, setUser] = useState([]);
   const [like, setLike] = useState(false);
   const [blocked, setBlocked] = useState(false);
+  const [reported, setReported] = useState(false);
 
   useEffect(() => {
     sendHttp(`/user/${id ?? ''}`).then((data) => {
       setUser(data);
       setLike(data.liked);
       setBlocked(data.blocked);
+      setReported(data.reported);
     }).catch(() => {
       navigate("/dashboard");
     })
@@ -27,6 +29,7 @@ const Profile = () => {
 
   const sendAction = (action, event) => {
     event.preventDefault();
+    if (action === 'report' && reported) return sendNotification('Already reported', 'error');
     const actionWord = action[0].toUpperCase() + action.slice(1);
     sendHttp(`/user/action`, 'POST', JSON.stringify({
       action,
@@ -35,6 +38,7 @@ const Profile = () => {
     .then(() => {
       if (action === 'like' || action === 'unlike') setLike(!like);
       if (action === 'block' || action === 'unblock') setBlocked(!blocked);
+      if (action === 'report') setReported(true);
       sendNotification(`Action performed: ${actionWord}`, 'success')
     })
     .catch(() => sendNotification(`Could not perform: ${actionWord}`, 'error'))
@@ -62,7 +66,7 @@ const Profile = () => {
               color: 'rgb(255, 89, 64)',
             } : {}}
           >
-            <input id="LikeCheckbox" type="checkbox" checked={like}/>
+            <input id="LikeCheckbox" type="checkbox" defaultChecked={like}/>
             <FontAwesomeIcon icon={faHeart}/>
           </label>
           }
@@ -74,11 +78,11 @@ const Profile = () => {
               color: 'rgb(255, 89, 64)',
             } : {}}
           >
-            <input id="LikeCheckbox" type="checkbox" checked={blocked}/>
+            <input id="LikeCheckbox" type="checkbox" defaultChecked={blocked}/>
             <FontAwesomeIcon icon={faBan}/>
           </label>
           }
-          { id && <button><FontAwesomeIcon onClick={(event)=>sendAction('report', event)} icon={faExclamation}/></button>}
+          { id && <button disabled={reported} onClick={(event)=>sendAction('report', event)}><FontAwesomeIcon icon={faExclamation}/></button>}
           { !id && <button onClick={()=>navigate('/dashboard/edit')}>edit</button>}
         </div>
     </div>

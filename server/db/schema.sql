@@ -56,3 +56,12 @@ CREATE TABLE IF NOT EXISTS blocks (
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (blocked_user_id) REFERENCES users(id)
 );
+
+CREATE TABLE IF NOT EXISTS reports (
+  id INT NOT NULL AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  reported_user_id INT NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (reported_user_id) REFERENCES users(id)
+);

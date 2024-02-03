@@ -19,6 +19,7 @@ async function getById(id, req, res) {
     if (id !== req.params.id) {
       result.liked = await User.hasLiked(id, req.params.id);
       result.blocked = await User.hasBlocked(id, req.params.id)
+      result.reported = await User.hasReported(id, req.params.id)
     }
     return res.status(200).json(result);
   } catch (error) {

@@ -119,6 +119,20 @@ class User {
     }
   }
 
+  static async hasReported(userId, otherUserId) {
+    const sql = `SELECT * FROM reports
+      WHERE user_id = ? AND reported_user_id = ?
+      `
+    const params = [userId, otherUserId];
+    try {
+      const result = await db.query(sql, params);
+      const ret = result[0] ? true: false;
+      return ret;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getPropositions(id, amount = 10) {
     const currentUser = await this.getFromId(id);
     const description = currentUser.about ?? "";
@@ -132,9 +146,11 @@ class User {
     for (const user of otherUsers) {
       const hasLiked = await User.hasLiked(id, user.id);
       const hasBlocked = await User.hasBlocked(id, user.id);
+      const hasReported = await User.hasReported(id, user.id);
       if (user.id === id
         || hasLiked
         || hasBlocked
+        || hasReported
         || currentUser.gender_identity != user.gender_interest
         || currentUser.gender_interest != user.gender_identity
       ) continue;
