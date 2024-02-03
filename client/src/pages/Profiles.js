@@ -191,25 +191,32 @@ const Profiles = () => {
   const tableInstance = useReactTable({
     columns,
     data: propositions,
-    getCoreRowModel: getCoreRowModel(),
     filterFns: {
       fuzzy: fuzzyFilter,
     },
     state: {
       sorting,
       columnFilters,
+      globalFilter,
     },
+    getCoreRowModel: getCoreRowModel(),
+
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onColumnFilterChange: setColumnFilters,
-    onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: fuzzyFilter,
-    getCoreRowModel: getCoreRowModel(),
+
     getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
+
+    onColumnFiltersChange: setColumnFilters,
+
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: fuzzyFilter,
+
+    debugTable: true,
+    debugHeader: true,
+    debugColumn: true,
   });
 
   return (
