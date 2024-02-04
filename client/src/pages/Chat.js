@@ -52,7 +52,7 @@ const Chat = () => {
     if (!receivedMessage) return;
     const currentId = parseInt(id);
     if (receivedMessage.action !== 'chat' || (receivedMessage.from !== currentId && receivedMessage.to !== currentId)) return;
-    setMessages([...messages, {from: id, to: receivedMessage.to, message: receivedMessage.message}]);
+    setMessages([...messages, {from: receivedMessage.from, to: receivedMessage.to, message: receivedMessage.message}]);
   }, [receivedMessage]);
 
   useEffect(() => {
