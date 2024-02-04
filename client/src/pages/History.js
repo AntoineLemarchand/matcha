@@ -123,7 +123,8 @@ const History = () => {
           {tableInstance.getRowModel().rows.map(row => {
             return (
               <tr key={row.id}
-                onClick={() => navigate(`../profile/${row.original.id}`)}
+                onClick={() => {navigate('../profile/'
+                  + (row.original.user_id === user.id ? row.original.viewed_user_id : row.original.user_id))}}
               >
                 {row.getVisibleCells().map(cell => {
                   return (
