@@ -36,6 +36,7 @@ const Chat = ({sendWs}) => {
     if (!id) return navigate("/dashboard");
     sendHttp(`/user/${id}`).then((data) => {
       setUser(data);
+      console.log(data);
     }).catch(() => {
       navigate("/dashboard");
     })

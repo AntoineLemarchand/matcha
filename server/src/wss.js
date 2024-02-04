@@ -14,7 +14,8 @@ export default function setupWss(server) {
         instanceMap.set(userId, connections);
       } else {
         instanceMap.delete(userId);
-        User.update(userId, {online: false, last_seen: new Date()});
+        // now date to SQL format
+        User.update(userId, {online: false, last_seen: new Date().toISOString().slice(0, 19).replace('T', ' ')})
       }
     }
     ws.close();

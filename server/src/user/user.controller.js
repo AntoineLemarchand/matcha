@@ -28,10 +28,9 @@ async function getById(id, req, res) {
 }
 
 async function update(req, res) {
-  const user = new User();
   try {
     if (req.body.id) delete req.body.id;
-    await user.update(req.params.id, req.body);
+    await User.update(req.params.id, req.body);
     return res.status(200).json({ message: "User updated" })
   } catch (error) {
     return res.status(500).json({ message: error.message, trace: error.stack });
