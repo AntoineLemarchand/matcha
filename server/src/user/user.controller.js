@@ -64,8 +64,8 @@ async function getViews(id, res) {
   const user = await (new User()).getFromId(id);
   try {
     if (!user.initialized) return res.status(400).json({ message: "User incomplete" });
-    const result = await (new User).getViews(user.id, 10);
-    return res.status(200).json(result);
+    const views = await (new User).getViews(user.id);
+    return res.status(200).json(views);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

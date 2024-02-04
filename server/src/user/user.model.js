@@ -138,8 +138,6 @@ class User {
     const otherUsers = await this.getAll();
     let propositions = []
 
-    let userHashtags = currentUser.tags.split('|').filter((tag) => tag !== '');
-
     for (const user of otherUsers) {
       const hasLiked = await User.hasLiked(id, user.id);
       const hasBlocked = await User.hasBlocked(id, user.id);
@@ -152,16 +150,9 @@ class User {
         || currentUser.gender_interest != user.gender_identity
       ) continue;
 
-      const otherHashtags = user.tags.split('|').filter((tag) => tag !== '');
-
-      if (typeof otherHashtags === 'string') otherHashtags = [otherHashtags];
       let count = 0;
-      console.log(userHashtags, otherHashtags)
-      for (const hashtag of userHashtags) {
-        if (otherHashtags.includes(hashtag)) count++;
-      }
       user.fame = await User.getFame(user.id);
-      user.count = count;
+      user.count = User.countTags(user.tags, currentUser.tags);
       propositions.push([user, count]);
     }
 
@@ -169,54 +160,66 @@ class User {
     return propositions.map((proposition) => proposition[0]);
   }
 
-  async getLikes(id) {
-    const otherUsers = await this.getAll();
-    let propositions = []
-
-    for (const user of otherUsers) {
-      const hasLiked = await User.hasLiked(id, user.id);
-      const hasBlocked = await User.hasBlocked(id, user.id);
-      const hasReported = await User.hasReported(id, user.id);
-      if (user.id === id
-        || hasBlocked
-        || hasReported
-        || !hasLiked
-      ) continue;
-
-      propositions.push([user, 0]);
+  static countTags(tags1, tags2) {
+    const userHashtags = tags1.split('|').filter((tag) => tag !== '');
+    const otherHashtags = tags2.split('|').filter((tag) => tag !== '');
+    let count = 0;
+    for (const hashtag of userHashtags) {
+      if (otherHashtags.includes(hashtag)) count++;
     }
+    return count;
+  }
 
-    return propositions.map((proposition) => proposition[0]);
+  async getLikes(id) {
+    const sql = `
+      SELECT user.* FROM likes 
+      LEFT JOIN users AS user ON likes.liked_user_id = user.id
+      WHERE likes.user_id = ?
+    `;
+    const params = [id];
+    try {
+      const result = await db.query(sql, params);
+      for (const user of result) {
+        const currentUser = await this.getFromId(id);
+        user.fame = await User.getFame(user.id);
+        user.count = User.countTags(user.tags, currentUser.tags);
+      }
+
+      const ret = result;
+      return ret;
+    } catch (error) {
+      throw error;
+    };
   }
 
   async getViews(id) {
-    // join users to their views
     const sql = `
       SELECT 
-        views.*,
+        history.*,
         user1.first_name AS user_first_name,
         user1.last_name AS user_last_name,
         user2.first_name AS viewed_user_first_name,
         user2.last_name AS viewed_user_last_name
-      FROM views 
-      LEFT JOIN users AS user1 ON views.user_id = user1.id
-      LEFT JOIN users AS user2 ON views.viewed_user_id = user2.id
-      WHERE views.viewed_user_id = ? OR views.user_id = ?
+      FROM history 
+      LEFT JOIN users AS user1 ON history.user_id = user1.id
+      LEFT JOIN users AS user2 ON history.viewed_user_id = user2.id
+      WHERE history.viewed_user_id = ? OR history.user_id = ?
       ORDER BY date_viewed DESC;
     `;
     const params = [id, id];
     try {
       const result = await db.query(sql, params);
-      const ret = result;
-      return ret;
+      return result;
     } catch (error) {
       throw error;
     }
   }
 
   static async like(userId, otherUserId) {
-    const sql = `INSERT IGNORE INTO likes (user_id, liked_user_id) VALUES (?, ?)`;
-    const params = [userId, otherUserId];
+    let sql = `INSERT INTO history (user_id, viewed_user_id, action) VALUES (?, ?, 'like')`;
+    let params = [userId, otherUserId];
+    await db.query(sql, params);
+    sql = `INSERT IGNORE INTO likes (user_id, liked_user_id) VALUES (?, ?)`;
     try {
       const result = await db.query(sql, params);
       return result;
@@ -270,7 +273,7 @@ class User {
   }
 
   static async view(userId, otherUserId) {
-    const sql = `INSERT INTO views (user_id, viewed_user_id) VALUES (?, ?)`;
+    const sql = `INSERT INTO history (user_id, viewed_user_id, action) VALUES (?, ?, 'seen')`;
     const params = [userId, otherUserId];
     try {
       const result = await db.query(sql, params);
@@ -313,7 +316,7 @@ class User {
     const sql = `
       SELECT 
         (SELECT COUNT(*) FROM likes WHERE liked_user_id = ?) AS likes,
-        (SELECT COUNT(*) FROM views WHERE viewed_user_id = ?) AS views,
+        (SELECT COUNT(*) FROM history WHERE viewed_user_id = ? AND action = 'seen') AS views,
         (SELECT COUNT(*) FROM reports WHERE reported_user_id = ?) AS reports,
         (SELECT COUNT(*) FROM blocks WHERE blocked_user_id = ?) AS blocks
       `;

@@ -68,10 +68,11 @@ CREATE TABLE IF NOT EXISTS reports (
   FOREIGN KEY (reported_user_id) REFERENCES users(id)
 );
 
-CREATE TABLE IF NOT EXISTS views (
+CREATE TABLE IF NOT EXISTS history (
   id INT NOT NULL AUTO_INCREMENT,
   user_id INT NOT NULL,
   viewed_user_id INT NOT NULL,
+  action VARCHAR(255) NOT NULL,
   date_viewed TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   FOREIGN KEY (user_id) REFERENCES users(id),

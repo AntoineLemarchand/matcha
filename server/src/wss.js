@@ -64,7 +64,6 @@ export default function setupWss(server) {
           if (!data.id) return;
           User.like(userId, data.id);
           User.hasLiked(data.id, userId).then((result) => {
-            console.log(result);
             if (result) {
               sendMessageToUser([data.id], { action: 'match', from: userId });
             } else {

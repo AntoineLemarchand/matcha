@@ -13,7 +13,7 @@ const History = () => {
 
   const navigate = useNavigate();
 
-  const [sendMessage, receivedMessage, user] = useOutletContext();
+  const [_sendMessage, _receivedMessage, user] = useOutletContext();
 
   const [views, setViews] = useState([]);
   const [sorting, setSorting] = useState([])
@@ -21,7 +21,6 @@ const History = () => {
   useEffect(() => {
     sendHttp("/user/views", "GET").then((data) => {
       setViews(data);
-      console.log(data);
     })
     .catch((error) => {
       if (error === 400)
@@ -66,11 +65,11 @@ const History = () => {
     }),
     createColumnHelper().accessor(row => {
       if (!user) return;
-      console.log(user.id, row.user_id)
-      if (row.user_id === user.id) {
-        return `You saw ${row.viewed_user_first_name} ${row.viewed_user_last_name}'s profile`;
-      } else {
-        return `${row.user_first_name} ${row.user_last_name} saw your profile`;
+      switch (row.action) {
+        case 'seen':
+          return row.user_id === user.id ? row.viewed_user_first_name + ' ' + row.viewed_user_last_name : row.user_first_name + ' ' + row.user_last_name;
+        case 'like':
+          return row.user_id === user.id ? 'You liked ' + row.viewed_user_first_name + ' ' + row.viewed_user_last_name : row.user_first_name + ' ' + row.user_last_name + ' liked you';
       }
     }, {
       header: 'Action',
