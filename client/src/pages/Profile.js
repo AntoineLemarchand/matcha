@@ -43,7 +43,7 @@ const Profile = () => {
     <div id="profile">
       <div className="content">
         <div className="infos">
-          <h1>{user.first_name} {user.last_name}</h1>
+          <h1>{user.first_name} {user.last_name}: {Math.round(user.fame * 100) / 100}</h1>
           <p>{user.biography}</p>
           {user.online ? (
             <p>Online</p>

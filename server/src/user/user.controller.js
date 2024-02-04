@@ -21,6 +21,7 @@ async function getById(id, req, res) {
       result.blocked = await User.hasBlocked(id, req.params.id)
       result.reported = await User.hasReported(id, req.params.id)
     }
+    result.fame = await User.getFame(id);
     return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({ message: error.message });

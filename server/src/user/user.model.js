@@ -135,13 +135,10 @@ class User {
 
   async getPropositions(id, amount = 10) {
     const currentUser = await this.getFromId(id);
-    const description = currentUser.about ?? "";
-    const tagRegex = /#(\w+)/g;
     const otherUsers = await this.getAll();
     let propositions = []
 
-    let userHashtags = description.match(tagRegex) ?? [];
-    if (typeof userHashtags === 'string') userHashtags = [userHashtags];
+    let userHashtags = currentUser.tags.split('|').filter((tag) => tag !== '');
 
     for (const user of otherUsers) {
       const hasLiked = await User.hasLiked(id, user.id);
@@ -155,14 +152,16 @@ class User {
         || currentUser.gender_interest != user.gender_identity
       ) continue;
 
-      const userDescription = user.about ?? "";
-      const otherHashtags = userDescription.match(tagRegex) ?? [];
+      const otherHashtags = user.tags.split('|').filter((tag) => tag !== '');
 
       if (typeof otherHashtags === 'string') otherHashtags = [otherHashtags];
       let count = 0;
+      console.log(userHashtags, otherHashtags)
       for (const hashtag of userHashtags) {
         if (otherHashtags.includes(hashtag)) count++;
       }
+      user.fame = await User.getFame(user.id);
+      user.count = count;
       propositions.push([user, count]);
     }
 
@@ -304,6 +303,28 @@ class User {
         delete message.receiver_id;
       });
       return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getFame(id) {
+    // calculate fame (fame = likes + views * 0.1 - reports * 3 - blocks * 2)
+    const sql = `
+      SELECT 
+        (SELECT COUNT(*) FROM likes WHERE liked_user_id = ?) AS likes,
+        (SELECT COUNT(*) FROM views WHERE viewed_user_id = ?) AS views,
+        (SELECT COUNT(*) FROM reports WHERE reported_user_id = ?) AS reports,
+        (SELECT COUNT(*) FROM blocks WHERE blocked_user_id = ?) AS blocks
+      `;
+    const params = [id, id, id, id];
+    try {
+      const result = await db.query(sql, params);
+      const ret = Number(result[0].likes) + 
+                  Number(result[0].views) * 0.1 - 
+                  Number(result[0].reports) * 3 - 
+                  Number(result[0].blocks) * 2;
+      return ret;
     } catch (error) {
       throw error;
     }

@@ -168,11 +168,11 @@ const Profiles = () => {
       header: 'Distance',
       cell: (Info) => <span>{Info.getValue()}</span>,
     }),
-    createColumnHelper().accessor(row => row.fame ?? 0, {
+    createColumnHelper().accessor(row => Math.round(row.fame * 100) / 100, {
       header: 'Fame',
       cell: (Info) => <span>{Info.getValue()}</span>,
     }),
-    createColumnHelper().accessor(row => row.fame ?? 0, {
+    createColumnHelper().accessor(row => row.count, {
       header: 'Tags in common',
       cell: (Info) => <span>{Info.getValue()}</span>,
     }),

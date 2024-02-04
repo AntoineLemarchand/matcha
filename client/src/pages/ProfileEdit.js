@@ -32,6 +32,7 @@ const OnBoarding = () => {
         if (data) {
           const date = new Date(data.user.date_of_birth);
           const formattedDate = date.toISOString().split('T')[0];
+          delete data.user.last_seen;
           setFormData((prevState) => ({
             ...prevState,
             ...data.user,
