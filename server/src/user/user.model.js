@@ -195,13 +195,17 @@ class User {
     const sql = `
       SELECT 
         views.*,
-        user.first_name AS first_name,
-        user.last_name AS last_name
+        user1.first_name AS user_first_name,
+        user1.last_name AS user_last_name,
+        user2.first_name AS viewed_user_first_name,
+        user2.last_name AS viewed_user_last_name
       FROM views 
-      LEFT JOIN users AS user ON views.viewed_user_id = user.id
-      WHERE views.viewed_user_id = ?;
+      LEFT JOIN users AS user1 ON views.user_id = user1.id
+      LEFT JOIN users AS user2 ON views.viewed_user_id = user2.id
+      WHERE views.viewed_user_id = ? OR views.user_id = ?
+      ORDER BY date_viewed DESC;
     `;
-    const params = [id];
+    const params = [id, id];
     try {
       const result = await db.query(sql, params);
       const ret = result;

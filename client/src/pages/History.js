@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import sendHttp from "../utils/sendHttp";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import {
   useReactTable,
   flexRender,
@@ -12,6 +12,8 @@ import {
 const History = () => {
 
   const navigate = useNavigate();
+
+  const [sendMessage, receivedMessage, user] = useOutletContext();
 
   const [views, setViews] = useState([]);
   const [sorting, setSorting] = useState([])
@@ -36,7 +38,6 @@ const History = () => {
     const days = Math.floor(hours / 24);
     const months = Math.floor(days / 30);
     const years = Math.floor(months / 12);
-    console.log(now)
     if (years > 0) {
       return `${years} year${years === 1 ? '' : 's'} ago`;
     }
@@ -59,11 +60,19 @@ const History = () => {
   }
 
   const columns = [
-    createColumnHelper().accessor((row) => getTimeSince(new Date(row.date_viewed)), {
+    createColumnHelper().accessor('date_viewed', {
       header: 'Date',
-      cell: (Info) => <span>{Info.getValue()}</span>,
+      cell: (Info) => <span>{getTimeSince(new Date(Info.getValue()))}</span>,
     }),
-    createColumnHelper().accessor(row => `${row.first_name} ${row.last_name} has viewed your profile`, {
+    createColumnHelper().accessor(row => {
+      if (!user) return;
+      console.log(user.id, row.user_id)
+      if (row.user_id === user.id) {
+        return `You saw ${row.viewed_user_first_name} ${row.viewed_user_last_name}'s profile`;
+      } else {
+        return `${row.user_first_name} ${row.user_last_name} saw your profile`;
+      }
+    }, {
       header: 'Action',
       enableSorting: false,
       cell: (Info) => <span>{Info.getValue()}</span>,

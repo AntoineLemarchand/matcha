@@ -91,7 +91,7 @@ const Dashboard = () => {
           </button>
         </div>
         <div className="dashboard-content">
-          <Outlet context={[sendMessage, receivedMessage]}/>
+          <Outlet context={[sendMessage, receivedMessage, user]}/>
         </div>
         <div className="card-container">
         </div>
