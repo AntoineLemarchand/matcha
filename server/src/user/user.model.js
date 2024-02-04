@@ -73,7 +73,7 @@ class User {
     }
   }
 
-  async update(id, data) {
+  static async update(id, data) {
     let userData = data;
 
     var setString = Object.keys(userData)
