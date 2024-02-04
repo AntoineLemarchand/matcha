@@ -115,7 +115,6 @@ const Profiles = () => {
 
   const [sorting, setSorting] = useState([])
   const [columnFilters, setColumnFilters] = useState([])
-  const [globalFilter, setGlobalFilter] = useState('')
 
   const getImageURL = (imageBuffer) => {
     if (imageBuffer.startsWith('/')) {
@@ -197,7 +196,6 @@ const Profiles = () => {
     state: {
       sorting,
       columnFilters,
-      globalFilter,
     },
     getCoreRowModel: getCoreRowModel(),
 
@@ -210,21 +208,10 @@ const Profiles = () => {
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
 
     onColumnFiltersChange: setColumnFilters,
-
-    onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: fuzzyFilter,
   });
 
   return (
     <div className="p-2">
-      <div>
-        <DebouncedInput
-          value={globalFilter ?? ''}
-          onChange={value => setGlobalFilter(String(value))}
-          className="p-2 font-lg shadow border border-block"
-          placeholder="Search all columns..."
-        />
-      </div>
       <table>
         <thead>
           {tableInstance.getHeaderGroups().map(headerGroup => (

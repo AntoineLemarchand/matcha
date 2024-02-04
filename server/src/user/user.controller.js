@@ -18,6 +18,7 @@ async function getById(id, req, res) {
     delete result.password;
     if (id !== req.params.id) {
       result.liked = await User.hasLiked(id, req.params.id);
+      result.like_back = await User.hasLiked(req.params.id, id);
       result.blocked = await User.hasBlocked(id, req.params.id)
       result.reported = await User.hasReported(id, req.params.id)
     }

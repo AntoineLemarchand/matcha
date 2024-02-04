@@ -9,11 +9,12 @@ import sendNotification from "../utils/notifications";
 
 const Profile = () => {
 
-  const [sendMessage] = useOutletContext();
+  const [sendMessage, receivedMessage] = useOutletContext();
   const { id } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState([]);
   const [like, setLike] = useState(false);
+  const [likeBack, setLikeBack] = useState(false);
   const [blocked, setBlocked] = useState(false);
   const [reported, setReported] = useState(false);
 
@@ -21,6 +22,7 @@ const Profile = () => {
     sendHttp(`/user/${id ?? ''}`).then((data) => {
       setUser(data);
       setLike(data.liked);
+      setLikeBack(data.like_back);
       setBlocked(data.blocked);
       setReported(data.reported);
       if (!data.liked)
@@ -30,6 +32,28 @@ const Profile = () => {
     })
   }, [id, navigate]);
 
+  useEffect(() => {
+    if (receivedMessage
+      && (receivedMessage.action === 'like'
+        || receivedMessage.action === 'match'
+        || receivedMessage.action === 'unlike')
+      && receivedMessage.from === parseInt(id)) {
+      switch (receivedMessage.action) {
+        case 'like':
+          setLikeBack(true);
+          break;
+        case 'match':
+          setLike(true);
+          setLikeBack(true);
+        break;
+        case 'unlike':
+          setLikeBack(false);
+          break;
+      }
+    }
+  }, [receivedMessage, id]);
+
+
   const sendAction = (action, event) => {
     event.preventDefault();
     if (action === 'report' && reported) return sendNotification('Already reported', 'error');
@@ -38,6 +62,7 @@ const Profile = () => {
     if (action === 'block' || action === 'unblock') setBlocked(!blocked);
     if (action === 'report') setReported(true);
   };
+
 
   return user && (
     <div id="profile">
@@ -78,7 +103,7 @@ const Profile = () => {
             <FontAwesomeIcon icon={faHeart}/>
           </label>
         }
-        { id && <button disabled={!like} onClick={()=>navigate(`/dashboard/chat/${id}`)}><FontAwesomeIcon icon={faMessage}/></button>}
+        { id && <button disabled={!(like && likeBack)} onClick={()=>navigate(`/dashboard/chat/${id}`)}><FontAwesomeIcon icon={faMessage}/></button>}
         { id &&
           <label className="button-checkbox" onClick={(event)=>sendAction(blocked ? 'unblock' : 'block', event)}
             style={blocked ? {

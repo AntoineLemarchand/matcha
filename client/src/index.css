@@ -388,27 +388,51 @@ nav .logo-container .logo {
 
 .main-container table {
   width: 100%;
-  overflow-y: auto;
+  overflow-x: auto;
   border-collapse: collapse;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  background-color: #f8f8f8;
 }
 
-.main-container table, .main-container th, .main-container td {
-  border: 1px solid rgb(226, 155, 155);
+.main-container th, .main-container td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.main-container th {
+  background-color: #e9e9e9;
+  font-weight: bold;
+  min-width: 3rem;
+}
+
+.main-container th input {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 0;
+  border: none;
+  background: none;
+  color: #333;
+  font-size: .7rem;
+  font-weight: normal;
+  text-align: left;
 }
 
 .main-container table tr {
-  height: 7rem;
-  background: rgb(255, 200, 200);
-  text-align: center;
-  margin-bottom: .5rem;
+  transition: background-color 0.3s ease;
 }
 
-.main-container table tbody tr {
+.main-container table tbody tr:hover {
+  background-color: #f0f0f0;
   cursor: pointer;
 }
 
 .main-container table img {
-  height: 7rem;
+  height: 4rem;
+  margin: auto;
+  display: block;
 }
 
 /* -------- MENU -------- */
@@ -561,12 +585,12 @@ button {
 }
 
 @keyframes slideIn {
-  0% {
-    transform: translateY(100%);
-  }
-  100% {
-    transform: translateY(0%);
-  }
+0% {
+  transform: translateY(100%);
+}
+100% {
+  transform: translateY(0%);
+}
 }
 
 .notification {
