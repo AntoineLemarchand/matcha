@@ -60,6 +60,31 @@ export default function setupWss(server) {
           User.sendMessage(userId, data.to, data.message);
           sendMessageToUser([data.to, userId], { action: 'chat', from: userId, to: parseInt(data.to), message: data.message });
           break;
+        case 'like':
+          if (!data.id) return;
+          User.like(userId, data.id);
+          User.hasLiked(data.id, userId).then((result) => {
+            console.log(result);
+            if (result) {
+              sendMessageToUser([data.id], { action: 'match', from: userId });
+            } else {
+              sendMessageToUser([data.id], { action: 'like', from: userId });
+            }
+          });
+          break;
+        case 'unlike':
+          if (!data.id) return;
+          User.unlike(userId, data.id);
+          sendMessageToUser([data.id], { action: 'unlike', from: userId });
+          break;
+        case 'seen':
+          if (!data.id) return;
+          sendMessageToUser([data.id], { action: 'seen', from: userId });
+          break;
+        case 'report':
+          if (!data.id) return;
+          User.report(userId, data.id);
+          break;
       }
     });
 

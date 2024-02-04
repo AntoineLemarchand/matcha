@@ -205,7 +205,7 @@ class User {
     return propositions.map((proposition) => proposition[0]);
   }
 
-  async like(userId, otherUserId) {
+  static async like(userId, otherUserId) {
     const sql = `INSERT IGNORE INTO likes (user_id, liked_user_id) VALUES (?, ?)`;
     const params = [userId, otherUserId];
     try {
@@ -216,7 +216,7 @@ class User {
     }
   }
 
-  async unlike(userId, otherUserId) {
+  static async unlike(userId, otherUserId) {
     const sql = `DELETE FROM likes WHERE user_id = ? AND liked_user_id = ?`;
     const params = [userId, otherUserId];
     try {
@@ -227,7 +227,7 @@ class User {
     }
   }
 
-  async block(userId, otherUserId) {
+  static async block(userId, otherUserId) {
     const sql = `INSERT IGNORE INTO blocks (user_id, blocked_user_id) VALUES (?, ?)`;
     const params = [userId, otherUserId];
     try {
@@ -238,7 +238,7 @@ class User {
     }
   }
 
-  async unblock(userId, otherUserId) {
+  static async unblock(userId, otherUserId) {
     const sql = `DELETE FROM blocks WHERE user_id = ? AND blocked_user_id = ?`;
     const params = [userId, otherUserId];
     try {
@@ -249,7 +249,7 @@ class User {
     }
   }
 
-  async report(userId, otherUserId) {
+  static async report(userId, otherUserId) {
     const sql = `INSERT INTO reports (user_id, reported_user_id) VALUES (?, ?)`;
     const params = [userId, otherUserId];
     try {

@@ -1,11 +1,12 @@
 // create a toast notification
-const sendNotification = async (message, type) => {
+const sendNotification = async (message, type, onClick) => {
   //all other notifications up 100%;
   const notifications = document.querySelectorAll('.notification');
   notifications.forEach((notification) => {
     notification.style.transform = 'translateY(-100%)';
   });
   const notification = document.createElement('div');
+  notification.onclick = onClick;
   notification.classList.add('notification');
   notification.classList.add(type);
   notification.innerText = message;

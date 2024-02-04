@@ -18,19 +18,50 @@ const Dashboard = () => {
       process.env.REACT_APP_WS_URL + '/connection', {
       onError: (event) => console.error(event),
       onMessage: handleReceiveMessage,
-    })
+  })
 
-    function handleReceiveMessage(event) {
-      const data = JSON.parse(event.data);
-      setReceivedMessage(data);
-      if (data.action === 'chat'
-        && location.pathname !== `/dashboard/chat/${data.from}`
-        && data.from !== user.id) {
+  function handleReceiveMessage(event) {
+    const data = JSON.parse(event.data);
+    setReceivedMessage(data);
+    switch (data.action) {
+      case 'chat':
+        if (location.pathname !== `/dashboard/chat/${data.from}`
+          && data.from !== user.id) {
+          sendHttp(`/user/${data.from}`).then((user) => {
+            sendNotification(`New message from ${user.first_name} ${user.last_name}`, 'info', () => {
+              navigate(`/dashboard/chat/${data.from}`);
+            });
+          });
+          break;
+        }
+      case 'like':
         sendHttp(`/user/${data.from}`).then((user) => {
-          sendNotification(`New message from ${user.first_name} ${user.last_name}`, 'info', () => {
-          navigate(`/dashboard/chat/${data.from}`);
+          sendNotification(`${user.first_name} ${user.last_name} liked you`, 'info', () => {
+            navigate(`/dashboard/profile/${data.from}`);
+          });
         });
-      });
+        break;
+      case 'unlike':
+        sendHttp(`/user/${data.from}`).then((user) => {
+          sendNotification(`${user.first_name} ${user.last_name} unliked you`, 'info', () => {
+            navigate(`/dashboard/profile/${data.from}`);
+          });
+        });
+        break;
+      case 'match':
+        sendHttp(`/user/${data.from}`).then((user) => {
+          sendNotification(`${user.first_name} ${user.last_name} liked you back`, 'info', () => {
+            navigate(`/dashboard/profile/${data.from}`);
+          });
+        });
+        break;
+      case 'seen':
+        sendHttp(`/user/${data.from}`).then((user) => {
+          sendNotification(`${user.first_name} ${user.last_name} saw your profile`, 'info', () => {
+            navigate(`/dashboard/profile/${data.from}`);
+          });
+        });
+        break;
     }
   }
 

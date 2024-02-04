@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import sendHttp from "../utils/sendHttp";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import ImagePreview from "../components/ImagePreview";
 import Interests from "../components/Interests";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,6 +9,7 @@ import sendNotification from "../utils/notifications";
 
 const Profile = () => {
 
+  const [sendMessage] = useOutletContext();
   const { id } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState([]);
@@ -22,26 +23,20 @@ const Profile = () => {
       setLike(data.liked);
       setBlocked(data.blocked);
       setReported(data.reported);
+      if (!data.liked)
+        sendMessage(JSON.stringify({action: 'seen', id}));
     }).catch(() => {
-        navigate("/dashboard");
-      })
+      navigate("/dashboard");
+    })
   }, [id, navigate]);
 
   const sendAction = (action, event) => {
     event.preventDefault();
     if (action === 'report' && reported) return sendNotification('Already reported', 'error');
-    const actionWord = action[0].toUpperCase() + action.slice(1);
-    sendHttp(`/user/action`, 'POST', JSON.stringify({
-      action,
-      user_id: id
-    }))
-      .then(() => {
-        if (action === 'like' || action === 'unlike') setLike(!like);
-        if (action === 'block' || action === 'unblock') setBlocked(!blocked);
-        if (action === 'report') setReported(true);
-        sendNotification(`Action performed: ${actionWord}`, 'success')
-      })
-      .catch(() => sendNotification(`Could not perform: ${actionWord}`, 'error'))
+    sendMessage(JSON.stringify({action, id}));
+    if (action === 'like' || action === 'unlike') setLike(!like);
+    if (action === 'block' || action === 'unblock') setBlocked(!blocked);
+    if (action === 'report') setReported(true);
   };
 
   return user && (
