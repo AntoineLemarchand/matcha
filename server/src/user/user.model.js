@@ -259,6 +259,34 @@ class User {
       throw error;
     }
   }
+
+  static async sendMessage(from, to, message) {
+    const sql = `INSERT INTO messages (sender_id, receiver_id, message) VALUES (?, ?, ?)`;
+    const params = [from, to, message];
+    try {
+      const result = await db.query(sql, params);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getMessages(from, to) {
+    const sql = `SELECT * FROM messages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)`;
+    const params = [from, to, to, from];
+    try {
+      const result = await db.query(sql, params);
+      result.forEach((message) => {
+        message.from = message.sender_id;
+        message.to = message.receiver_id;
+        delete message.sender_id;
+        delete message.receiver_id;
+      });
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default User;

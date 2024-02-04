@@ -1,4 +1,4 @@
-import { WebSocketServer } from "ws";
+import { WebSocketServer, WebSocket } from "ws";
 import jwt from 'jsonwebtoken';
 import User from "./user/user.model.js";
 
@@ -57,8 +57,8 @@ export default function setupWss(server) {
       switch(data.action) {
         case 'chat':
           if (!data.to || !data.message) return;
-          console.log('sending message to: ', data.to);
-          console.log('message: ', data.message);
+          User.sendMessage(userId, data.to, data.message);
+          sendMessageToUser([data.to, userId], { action: 'chat', from: userId, to: parseInt(data.to), message: data.message });
           break;
       }
     });
@@ -74,13 +74,25 @@ export default function setupWss(server) {
   });
 
   // Function to send message to a specific user
-  const sendMessageToUser = (userId, message) => {
-    if (instanceMap.has(userId)) {
-      instanceMap.get(userId).forEach(ws => {
-        ws.send(JSON.stringify(message));
-      });
+  const sendMessageToUser = (userIds, message) => {
+    if (instanceMap.size === 0) return;
+
+    for (const userId of userIds) {
+      const id = parseInt(userId)
+      if (instanceMap.has(id)) {
+        const userConnections = instanceMap.get(id);
+        for (const ws of userConnections) {
+          try {
+            if (ws.readyState === WebSocket.OPEN) {
+              ws.send(JSON.stringify(message));
+            }
+          } catch (error) {
+            console.error(`Error sending message to user ${id}:`, error);
+          }
+        }
+      }
     }
-  }
+  };
 
   // Expose sendMessageToUser for external use if needed
   return { sendMessageToUser };

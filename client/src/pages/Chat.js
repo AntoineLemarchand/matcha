@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import sendHttp from "../utils/sendHttp";
 import sendNotification from "../utils/notifications";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import ImagePreview from "../components/ImagePreview";
 
-const Chat = ({sendWs}) => {
+const Chat = () => {
+  const [ sendMessage, receivedMessage ] = useOutletContext();
   const { id } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState([]);
   const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([])
 
   const handleOnInput = (e) => {
     e.preventDefault();
@@ -26,9 +28,8 @@ const Chat = ({sendWs}) => {
   }
 
   const handleOnSend = () => {
-    console.log('sending message: ', message)
-    // if (!message) return
-    // sendWs(JSON.stringify({action: "message", to: id, message}));
+    if (!message) return
+    sendMessage(JSON.stringify({action: "chat", to: id, message}));
     setMessage('');
   }
 
@@ -36,19 +37,53 @@ const Chat = ({sendWs}) => {
     if (!id) return navigate("/dashboard");
     sendHttp(`/user/${id}`).then((data) => {
       setUser(data);
-      console.log(data);
+
     }).catch(() => {
       navigate("/dashboard");
     })
+    sendHttp(`/user/messages/${id}`).then((data) => {
+      setMessages(data);
+    }).catch(() => {
+      sendNotification('Could not fetch messages', 'error');
+    });
   }, [id, navigate]);
+
+  useEffect(() => {
+    if (!receivedMessage) return;
+    const currentId = parseInt(id);
+    if (receivedMessage.action !== 'chat' || (receivedMessage.from !== currentId && receivedMessage.to !== currentId)) return;
+    setMessages([...messages, {from: id, to: receivedMessage.to, message: receivedMessage.message}]);
+  }, [receivedMessage]);
+
+  useEffect(() => {
+    const chat = document.querySelector('.body');
+    chat.scrollTop = chat.scrollHeight;
+  }, [messages]);
 
   return (
     <div className="chat-container">
       <div className="header">
         {user.image_0 && <ImagePreview image={user.image_0} className={user.online ? 'online' : 'offline'}/>}
         <p>{user.first_name} {user.last_name}</p>
+      {user.online ? (
+        <p>Online</p>
+      ) : (
+        <p>(Last seen: {
+          new Date(user.last_seen).toLocaleDateString('en-US', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+          })
+        })</p>
+      )}
       </div>
       <div className="body">
+      {
+        messages.map((message, index) => (
+        <div key={index} className={message.from === parseInt(id) ? 'message received' : 'message sent'}>
+          <p>{message.message}</p>
+        </div>
+      ))}
       </div>
       <div className="sendInput">
         <input type='text' onKeyDown={handleOnInput} defaultValue={message}/>

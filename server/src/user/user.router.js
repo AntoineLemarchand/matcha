@@ -31,6 +31,13 @@ router.post('/action', async (req, res) => {
   await userController.action(id, user_id, action, res);
 });
 
+router.get("/messages/:id", async (req, res) => {
+  if (!req.cookies.token) return res.status(401).json({ message: "Unauthorized" });
+  const id = jwt.verify(req.cookies.token, process.env.JWT_SECRET).id;
+  if (!id) return res.status(401).json({ message: "Unauthorized" });
+  await userController.getMessages(id, req.params.id, res);
+});
+
 router.get("/:id", async (req, res) => {
   if (!req.cookies.token) return res.status(401).json({ message: "Unauthorized" });
   const id = jwt.verify(req.cookies.token, process.env.JWT_SECRET).id;

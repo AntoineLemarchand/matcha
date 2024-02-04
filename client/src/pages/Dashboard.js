@@ -10,6 +10,7 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [receivedMessage, setReceivedMessage] = useState(null);
 
   const { sendMessage } = useWebSocket(
     process.env.REACT_APP_WS_URL + '/connection', {
@@ -19,11 +20,7 @@ const Dashboard = () => {
 
   function handleReceiveMessage(event) {
     const data = JSON.parse(event.data);
-    switch (data.action) {
-      default:
-        console.log(data);
-        break;
-    }
+    setReceivedMessage(data);
   }
 
   function openMenu() {
@@ -52,7 +49,7 @@ const Dashboard = () => {
           </button>
         </div>
         <div className="dashboard-content">
-          <Outlet sendWs={sendMessage}/>
+          <Outlet context={[sendMessage, receivedMessage]}/>
         </div>
         <div className="card-container">
         </div>

@@ -87,4 +87,13 @@ async function action(id, user_id, action, res) {
   }
 }
 
-export default { getAll, getById, update, getPropositions, getLikes, action}
+async function getMessages(id, otherId, res) {
+  try {
+    const result = await User.getMessages(id, otherId);
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export default { getAll, getById, update, getPropositions, getLikes, action, getMessages }

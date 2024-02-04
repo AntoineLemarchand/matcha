@@ -50,6 +50,17 @@ const Profile = () => {
         <div className="infos">
           <h1>{user.first_name} {user.last_name}</h1>
           <p>{user.biography}</p>
+          {user.online ? (
+            <p>Online</p>
+          ) : (
+            <p>(Last seen: {
+              new Date(user.last_seen).toLocaleDateString('en-US', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+              })
+            })</p>
+          )}
           {user.tags &&<Interests tags={user.tags.split('|').filter((tag) => tag !== '')} />}
         </div>
         <div className="galery">
