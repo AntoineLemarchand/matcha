@@ -7,6 +7,7 @@ import ProfileEdit from "./pages/ProfileEdit";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Likes from "./pages/Likes";
 import Chat from "./pages/Chat";
+import History from "./pages/History";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="profile" element={<Profile />} />
           <Route path="profile/:id" element={<Profile />} />
           <Route path="edit" element={<ProfileEdit />} />
+          <Route path="history" element={<History />} />
         </Route>
       </Routes>
     </BrowserRouter>

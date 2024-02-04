@@ -79,6 +79,7 @@ export default function setupWss(server) {
           break;
         case 'seen':
           if (!data.id) return;
+          User.view(userId, data.id);
           sendMessageToUser([data.id], { action: 'seen', from: userId });
           break;
         case 'report':

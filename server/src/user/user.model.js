@@ -170,15 +170,9 @@ class User {
     return propositions.map((proposition) => proposition[0]);
   }
 
-  async getLikes(id, amount = 10) {
-    const currentUser = await this.getFromId(id);
-    const description = currentUser.about ?? "";
-    const tagRegex = /#(\w+)/g;
+  async getLikes(id) {
     const otherUsers = await this.getAll();
     let propositions = []
-
-    let userHashtags = description.match(tagRegex) ?? [];
-    if (typeof userHashtags === 'string') userHashtags = [userHashtags];
 
     for (const user of otherUsers) {
       const hasLiked = await User.hasLiked(id, user.id);
@@ -190,19 +184,31 @@ class User {
         || !hasLiked
       ) continue;
 
-      const userDescription = user.about ?? "";
-      const otherHashtags = userDescription.match(tagRegex) ?? [];
-
-      if (typeof otherHashtags === 'string') otherHashtags = [otherHashtags];
-      let count = 0;
-      for (const hashtag of userHashtags) {
-        if (otherHashtags.includes(hashtag)) count++;
-      }
-      propositions.push([user, count]);
+      propositions.push([user, 0]);
     }
 
-    propositions = propositions.sort((a, b) => a[1] - b[1]).slice(0, amount);
     return propositions.map((proposition) => proposition[0]);
+  }
+
+  async getViews(id) {
+    // join users to their views
+    const sql = `
+      SELECT 
+        views.*,
+        user.first_name AS first_name,
+        user.last_name AS last_name
+      FROM views 
+      LEFT JOIN users AS user ON views.viewed_user_id = user.id
+      WHERE views.viewed_user_id = ?;
+    `;
+    const params = [id];
+    try {
+      const result = await db.query(sql, params);
+      const ret = result;
+      return ret;
+    } catch (error) {
+      throw error;
+    }
   }
 
   static async like(userId, otherUserId) {
@@ -251,6 +257,17 @@ class User {
 
   static async report(userId, otherUserId) {
     const sql = `INSERT INTO reports (user_id, reported_user_id) VALUES (?, ?)`;
+    const params = [userId, otherUserId];
+    try {
+      const result = await db.query(sql, params);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async view(userId, otherUserId) {
+    const sql = `INSERT INTO views (user_id, viewed_user_id) VALUES (?, ?)`;
     const params = [userId, otherUserId];
     try {
       const result = await db.query(sql, params);
