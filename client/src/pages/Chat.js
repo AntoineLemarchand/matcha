@@ -36,8 +36,8 @@ const Chat = () => {
   useEffect(() => {
     if (!id) return navigate("/dashboard");
     sendHttp(`/user/${id}`).then((data) => {
+      if (!data.liked || !data.like_back) return navigate("/dashboard");
       setUser(data);
-
     }).catch(() => {
       navigate("/dashboard");
     })
@@ -51,6 +51,7 @@ const Chat = () => {
   useEffect(() => {
     if (!receivedMessage) return;
     const currentId = parseInt(id);
+    if (receivedMessage.action === 'unlike' && receivedMessage.from === currentId) navigate('/dashboard');
     if (receivedMessage.action !== 'chat' || (receivedMessage.from !== currentId && receivedMessage.to !== currentId)) return;
     setMessages([...messages, {from: receivedMessage.from, to: receivedMessage.to, message: receivedMessage.message}]);
   }, [receivedMessage]);
