@@ -13,7 +13,6 @@ const OnBoarding = () => {
     first_name: "",
     last_name: "",
     date_of_birth: "",
-    show_gender: 0,
     gender_identity: "man",
     gender_interest: "woman",
     biography: "",
@@ -189,21 +188,6 @@ const OnBoarding = () => {
             </div>
 
             <div>
-              <label htmlFor="show-gender">
-                Show gender on my profile
-              </label>
-              <div className="multiple-input-container">
-                <input
-                  id="show-gender"
-                  type="checkbox"
-                  name="show_gender"
-                  onChange={handleChange}
-                  checked={formData.show_gender}
-                />
-              </div>
-            </div>
-
-            <div>
               <label>Show me</label>
               <div className="multiple-input-container">
                 <input
@@ -265,6 +249,7 @@ const OnBoarding = () => {
                   key={index}
                   imageBuffer={formData[`image_${index}`]}
                   onFileChange={handleChange}
+                  title={`Picture ${index + 1}`}
                   />
               })
             }

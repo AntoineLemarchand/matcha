@@ -187,7 +187,6 @@ nav .logo-container .logo {
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   width: 50%;
-  heigth: 100%;
   margin-inline: auto;
 }
 
@@ -298,6 +297,7 @@ nav .logo-container .logo {
   display: flex;
   flex-direction: column;
   padding: 1rem;
+  max-width: 80%;
 }
 
 .onboarding form input {
@@ -314,6 +314,7 @@ nav .logo-container .logo {
 
 .onboarding img {
   width: 100%;
+  object-fit: contain;
 }
 
 .onboarding form .multiple-input-container {

@@ -5,7 +5,7 @@ import { faClose } from "@fortawesome/free-solid-svg-icons";
 const Interests = ({edit, tags, onChange}) => {
 
   const [inputContent, setInputContent] = useState('');
-  const [currentTags, setCurrentTags] = useState(tags ?? []);
+  const [currentTags, setCurrentTags] = useState(tags);
 
   const updateTags = (event) => {
     event.preventDefault();

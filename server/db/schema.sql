@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS users (
   first_name VARCHAR(255),
   last_name VARCHAR(255),
   date_of_birth DATE,
-  show_gender BOOLEAN,
   gender_identity VARCHAR(255),
   gender_interest VARCHAR(255),
   matches TEXT,
