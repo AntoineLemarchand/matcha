@@ -1,9 +1,10 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Nav from "../components/Nav";
 import ImageUpload from "../components/ImageUpload";
 import sendHttp from "../utils/sendHttp";
-import Interests from "../components/Interests"
+import Interests from "../components/Interests";
+import sendNotification from "../utils/notifications";
 
 const OnBoarding = () => {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const OnBoarding = () => {
         }
       })
       .catch((error) => {
-        navigate("/");
+        console.error(error);
       });
   }, [navigate]);
 
@@ -66,9 +67,9 @@ const OnBoarding = () => {
 
     sendHttp(`/user/${id}`, "PUT", body, {})
       .then((data) => {
-          navigate("/dashboard");
+        sendNotification("User updated", "success");
       }).catch((error) => {
-        console.error(error);
+        sendNotification("Email already taken", "error");
       })
   }
 
@@ -97,11 +98,22 @@ const OnBoarding = () => {
 
   return (
     <>
-      <Nav minimal={true} setShowModal={() => {}} showModal={false} />
       <div className="onboarding">
-        <h2>Create account</h2>
         <form onSubmit={handleSubmit}>
           <section>
+            <div>
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="text"
+                name="email"
+                placeholder="email"
+                required={true}
+                value={formData.email ?? ''}
+                onChange={handleChange}
+              />
+            </div>
+
             <div>
               <label htmlFor="first_name">First name</label>
               <input
