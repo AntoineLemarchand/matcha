@@ -46,7 +46,7 @@ const Interests = ({edit, tags, onChange}) => {
           )
         }
       </div>
-      {edit && <input type="text" onKeyDown={updateTags} value={inputContent}/>}
+      {edit && <input type="text" onKeyDown={updateTags} defaultValue={inputContent}/>}
   </div>
   )
 }

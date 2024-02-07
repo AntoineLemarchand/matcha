@@ -243,7 +243,7 @@ const OnBoarding = () => {
               })
             }
           </section>
-          <input type="submit" value="Submit" />
+          <input type="submit" defaultValue="Submit" />
         </form>
       </div>
     </>
