@@ -10,6 +10,10 @@ const Interests = ({edit, tags, onChange}) => {
   const updateTags = (event) => {
     event.preventDefault();
     if (event.code === 'Space' || event.code === 'Enter' || event.code === 'Tab' || event.key === '|' || inputContent.length > 10) {
+      if (currentTags.includes(inputContent) || currentTags.length >= 10) {
+        setInputContent('');
+        return;
+      }
       setCurrentTags([...currentTags, inputContent])
       setInputContent('');
       // trigger onChange

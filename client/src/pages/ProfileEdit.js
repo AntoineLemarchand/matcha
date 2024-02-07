@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ImageUpload from "../components/ImageUpload";
 import sendHttp from "../utils/sendHttp";
 import Interests from "../components/Interests";
+import sendNotification from "../utils/notifications";
 
 const OnBoarding = () => {
   const navigate = useNavigate();
@@ -66,9 +67,9 @@ const OnBoarding = () => {
 
     sendHttp(`/user/${id}`, "PUT", body, {})
       .then((data) => {
-          navigate("");
+        sendNotification("User updated", "success");
       }).catch((error) => {
-        console.error(error);
+        sendNotification("Email already taken", "error");
       })
   }
 

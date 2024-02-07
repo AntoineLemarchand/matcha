@@ -203,9 +203,9 @@ input[type="email"] {
 }
 
 .tag {
-  height: 4rem;
-  margin-bottom: .5rem;
-  width: 7rem;
+  height: 3rem;
+  margin: .5rem;
+  max-width: 7rem;
   padding-inline: 1rem;
   display: flex;
   justify-content: center;
@@ -218,6 +218,8 @@ input[type="email"] {
 .tag button {
   height: 2rem;
   width: 2rem;
+  margin: 0;
+  margin-left: .5rem;
 }
 
 
