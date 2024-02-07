@@ -14,36 +14,33 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      if (isSignUp && password !== confirmPassword) {
-        setError("Passwords do not match");
-      }
-      fetch(`${process.env.REACT_APP_API_URL}/auth/${isSignUp ? "signup" : "login"}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            if (isSignUp) {
-              setError("Email already taken");
-            } else {
-              setError("Invalid email or password");
-            }
-          }
-          return response.json();
-        })
-        .then(() => {
-          navigate("/dashboard");
-        })
-        .catch((error) => {
-          console.error('There was an error!', error);
-        });
-    } catch (error) {
-      console.log(error);
+    if (isSignUp && password !== confirmPassword) {
+      setError("Passwords do not match");
     }
+    fetch(`${process.env.REACT_APP_API_URL}/auth/${isSignUp ? "signup" : "login"}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    })
+    .then((response) => {
+      console.log(response.status === 201)
+      if (response.status === 201) {
+        navigate("/dashboard");
+      };
+      return response.json()
+    })
+    .then((data) => {
+      if (data.message) {
+        setError(data.message);
+      } else {
+        setShowModal(false);
+      }
+    })
+    .catch((error) => {
+      setError(error.message);
+    });
   };
 
   return (

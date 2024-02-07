@@ -302,6 +302,7 @@ input[type="email"] {
   flex-direction: column;
   padding: 1rem;
   max-width: 80%;
+  min-width: 40%;
 }
 
 .onboarding form input {
@@ -346,6 +347,9 @@ input[type="email"] {
 
 .onboarding form textarea {
   width: 100%;
+  border: solid 2px rgb(219, 219, 219);
+  border-radius: 10px;
+  height: 3rem;
 }
 
 .onboarding form input[type="radio"] {

@@ -7,7 +7,7 @@ async function getAll(id, res) {
     delete result.password;
     return res.status(200).json(result);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
   }
 }
 
@@ -25,7 +25,7 @@ async function getById(id, req, res) {
     result.fame = await User.getFame(id);
     return res.status(200).json(result);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
   }
 }
 
@@ -35,7 +35,7 @@ async function update(req, res) {
     await User.update(req.params.id, req.body);
     return res.status(200).json({ message: "User updated" })
   } catch (error) {
-    return res.status(500).json({ message: error.message, trace: error.stack });
+    return res.status(400).json({ message: error.message });
   }
 }
 
@@ -46,7 +46,7 @@ async function getPropositions(id, res) {
     const result = await (new User).getPropositions(user.id, 10);
     return res.status(200).json(result);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
   }
 }
 
@@ -57,7 +57,7 @@ async function getLikes(id, res) {
     const result = await (new User).getLikes(user.id, 10);
     return res.status(200).json(result);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
   }
 }
 
@@ -68,7 +68,7 @@ async function getViews(id, res) {
     const views = await (new User).getViews(user.id);
     return res.status(200).json(views);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
   }
 }
 
@@ -96,7 +96,7 @@ async function action(id, user_id, action, res) {
     }
     return res.status(200).json({ message: "Action done" });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
   }
 }
 
@@ -105,7 +105,7 @@ async function getMessages(id, otherId, res) {
     const result = await User.getMessages(id, otherId);
     return res.status(200).json(result);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
   }
 }
 

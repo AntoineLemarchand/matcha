@@ -42,7 +42,7 @@ const OnBoarding = () => {
         }
       })
       .catch((error) => {
-        console.error(error);
+        navigate("/");
       });
   }, [navigate]);
 

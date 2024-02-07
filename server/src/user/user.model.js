@@ -8,7 +8,12 @@ class User {
   }
 
   static hashPassword(password) {
-    return bcrypt.hash(password ?? this.password, 10);
+    const saltRounds = 10;
+    if (password.length < 8) throw new Error("Password too short")
+    if (!password.match(/[A-Z]/)) throw new Error("Password must contain at least one uppercase letter")
+    if (!password.match(/[a-z]/)) throw new Error("Password must contain at least one lowercase letter")
+    if (!password.match(/[0-9]/)) throw new Error("Password must contain at least one number")
+    return bcrypt.hash(password, saltRounds);
   }
 
   async validateCredentials() {
@@ -31,8 +36,8 @@ class User {
 
   async saveToDB() {
     const sql = `INSERT INTO users (email, password) VALUES (?, ?)`;
-    const params = [this.email, await User.hashPassword()];
     try {
+      const params = [this.email, await User.hashPassword(this.password)];
       const result = await db.query(sql, params);
       return result;
     } catch (error) {
@@ -64,7 +69,7 @@ class User {
 
   async getFromEmail(email) {
     const sql = `SELECT * FROM users WHERE email = ?`;
-    const params = [email];
+    const params = [email ?? this.email];
     try {
       const result = await db.query(sql, params);
       return result[0];
