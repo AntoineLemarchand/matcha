@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
   gender_interest VARCHAR(255),
   matches TEXT,
   biography TEXT,
-  tags TEXT NOT NULL DEFAULT '',
+  tags VARCHAR(255) NOT NULL DEFAULT '',
   image_0 TEXT,
   image_1 TEXT,
   image_2 TEXT,
@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS users (
   initialized BOOLEAN NOT NULL DEFAULT FALSE,
   online BOOLEAN NOT NULL DEFAULT FALSE,
   last_seen TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  UNIQUE (email)
 );
 
 CREATE TABLE IF NOT EXISTS websocket_ids (
@@ -76,4 +77,14 @@ CREATE TABLE IF NOT EXISTS history (
   PRIMARY KEY (id),
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (viewed_user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS recovery_code (
+  id INT NOT NULL AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  code VARCHAR(255) NOT NULL,
+  date_created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  UNIQUE (user_id)
 );

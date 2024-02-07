@@ -56,6 +56,8 @@ h2 {
   border-radius: 30px;
   border: 2px solid rgb(121, 119, 119);
   margin: 6px;
+  width: 100%;
+  height: 3rem;
 }
 
 .secondary-button:hover {
@@ -154,8 +156,8 @@ nav .logo-container .logo {
   flex-direction: column;
 }
 
-.auth-modal input[type="password"],
-.auth-modal input[type="email"] {
+input[type="password"],
+input[type="email"] {
   margin: 8px;
   padding: 8px;
   font-size: 17px;
@@ -637,4 +639,12 @@ button {
   background: rgb(226, 226, 226);
   margin-right: auto;
   border-radius: 1rem 1rem 1rem 0;
+}
+
+.recovery {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }

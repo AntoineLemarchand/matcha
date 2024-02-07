@@ -15,4 +15,10 @@ router.get("/logout", (req, res) => {
   res.status(200).json({ message: "User logged out" });
 })
 
+router.post("/recovery", authController.forgotPassword );
+
+router.post("/validate-recovery-code", authController.validateRecoveryCode );
+
+router.post("/password-change", authController.passwordChange );
+
 export default router;

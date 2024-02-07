@@ -7,8 +7,8 @@ class User {
     this.password = password;
   }
 
-  hashPassword() {
-    return bcrypt.hash(this.password, 10);
+  static hashPassword(password) {
+    return bcrypt.hash(password ?? this.password, 10);
   }
 
   async validateCredentials() {
@@ -31,7 +31,7 @@ class User {
 
   async saveToDB() {
     const sql = `INSERT INTO users (email, password) VALUES (?, ?)`;
-    const params = [this.email, await this.hashPassword()];
+    const params = [this.email, await User.hashPassword()];
     try {
       const result = await db.query(sql, params);
       return result;
@@ -62,9 +62,9 @@ class User {
     }
   }
 
-  async getFromEmail() {
+  async getFromEmail(email) {
     const sql = `SELECT * FROM users WHERE email = ?`;
-    const params = [this.email];
+    const params = [email];
     try {
       const result = await db.query(sql, params);
       return result[0];

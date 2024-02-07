@@ -6,30 +6,35 @@ import jwt from 'jsonwebtoken';
 const router = express.Router();
 
 router.get("/", async (req, res) => {
+  if (!req.cookies.token) return res.status(401).json({ message: "Unauthorized" })
   const id = jwt.verify(req.cookies.token ?? '', process.env.JWT_SECRET).id;
   if (!id) return res.status(401).json({ message: "Unauthorized" });
   await userController.getAll(id, res);
 });
 
 router.get("/propositions", async (req, res) => {
+  if (!req.cookies.token) return res.status(401).json({ message: "Unauthorized" })
   const id = jwt.verify(req.cookies.token, process.env.JWT_SECRET).id;
   if (!id) return res.status(401).json({ message: "Unauthorized" });
   await userController.getPropositions(id, res);
 });
 
 router.get("/likes", async (req, res) => {
+  if (!req.cookies.token) return res.status(401).json({ message: "Unauthorized" })
   const id = jwt.verify(req.cookies.token, process.env.JWT_SECRET).id;
   if (!id) return res.status(401).json({ message: "Unauthorized" });
   await userController.getLikes(id, res);
 });
 
 router.get("/views", async (req, res) => {
+  if (!req.cookies.token) return res.status(401).json({ message: "Unauthorized" })
   const id = jwt.verify(req.cookies.token, process.env.JWT_SECRET).id;
   if (!id) return res.status(401).json({ message: "Unauthorized" });
   await userController.getViews(id, res);
 });
 
 router.post('/action', async (req, res) => {
+  if (!req.cookies.token) return res.status(401).json({ message: "Unauthorized" })
   const id = jwt.verify(req.cookies.token, process.env.JWT_SECRET).id;
   if (!id) return res.status(401).json({ message: "Unauthorized" });
   const {action, user_id} = req.body;
@@ -52,6 +57,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.put("/:id", imageUpload, async (req, res) => {
+  if (!req.cookies.token) return res.status(401).json({ message: "Unauthorized" })
   const id = jwt.verify(req.cookies.token, process.env.JWT_SECRET).id;
   if (!id) return res.status(401).json({ message: "Unauthorized" });
   try {
