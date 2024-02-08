@@ -12,7 +12,7 @@ const server = http.createServer(app);
 const apiRouter = express.Router();
 
 app.use(cors({
-  origin: `http://${process.env.SERVER_URL}:${process.env.CLIENT_PORT}`,
+  origin: `https://${process.env.SERVER_URL}:${process.env.SERVER_PORT}`,
   credentials: true,
 }));
 app.use(express.json({ limit: '50mb' }));
@@ -41,6 +41,6 @@ app.use((err, req, res, next) => {
 
 setupWss(server);
 
-server.listen(process.env.SERVER_PORT, () => {
-  console.log(`Server running on port ${process.env.SERVER_PORT}`);
+server.listen(3000, () => {
+  console.log(`[INFO] backend server running`);
 });

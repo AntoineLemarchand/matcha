@@ -25,4 +25,5 @@ yarn-error.log*
 
 .env
 /db
+/certs
 /server/images/

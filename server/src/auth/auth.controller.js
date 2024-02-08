@@ -92,7 +92,7 @@ async function forgotPassword(req, res) {
       from: process.env.MAIL_USERNAME,
       to: email,
       subject: "Matcha: Password Recovery",
-      html: `<a href="${process.env.CLIENT_URL}:${process.env.CLIENT_PORT}/recovery/${code}">Click here to recover your password</a>`,
+      html: `<a href="${process.env.SERVER_URL}:${process.env.SERVER_PORT}/recovery/${code}">Click here to recover your password</a>`,
     };
     try {
       await transporter.sendMail(mailOptions);
