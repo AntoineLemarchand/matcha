@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS users (
   image_2 TEXT,
   image_3 TEXT,
   image_4 TEXT,
+  longitude FLOAT,
+  latitude FLOAT,
   password VARCHAR(255) NOT NULL,
   initialized BOOLEAN NOT NULL DEFAULT FALSE,
   online BOOLEAN NOT NULL DEFAULT FALSE,

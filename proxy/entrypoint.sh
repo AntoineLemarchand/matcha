@@ -8,9 +8,9 @@ KEY_PATH="/etc/nginx/ssl/private/matcha.key"
 mkdir -p /etc/nginx/ssl/certs
 mkdir -p /etc/nginx/ssl/private
 
-# Substitute environment variables in Nginx configuration
-mv /etc/nginx/nginx.conf.template /etc/nginx/nginx.conf;
+envsubst '$SERVER_PORT' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 echo "[INFO] Nginx configuration initialized"
+cat /etc/nginx/nginx.conf
 
 # Generate certificate and key if they don't exist
 if [ ! -f "$CERT_PATH" ] || [ ! -f "$KEY_PATH" ]; then

@@ -8,6 +8,7 @@ import Interests from "../components/Interests"
 const OnBoarding = () => {
   const navigate = useNavigate();
   const [id, setId] = useState(0);
+  const [testLocation, setTestLocation] = useState([0, 0]); // [latitude, longitude
   const [formData, setFormData] = useState({
     email: "",
     first_name: "",
@@ -28,22 +29,33 @@ const OnBoarding = () => {
 
   useEffect(() => {
     sendHttp('/auth/verify', 'GET').then((data) => {
-        if (data) {
-          const date = new Date(data.user.date_of_birth);
-          const formattedDate = date.toISOString().split('T')[0];
-          delete data.user.last_seen;
-          setFormData((prevState) => ({
-            ...prevState,
-            ...data.user,
-            date_of_birth: formattedDate,
-            initialized: 1,
-          }));
-          setId(data.user.id);
-        }
-      })
-      .catch((error) => {
-        navigate("/");
+      if (data) {
+        const date = new Date(data.user.date_of_birth);
+        const formattedDate = date.toISOString().split('T')[0];
+        delete data.user.last_seen;
+        setFormData((prevState) => ({
+          ...prevState,
+          ...data.user,
+          date_of_birth: formattedDate,
+          initialized: 1,
+        }));
+        setId(data.user.id);
+      }
+    })
+    .catch((error) => {
+      navigate("/");
+    });
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { latitude, longitude } = position.coords;
+      setTestLocation([latitude, longitude]);
+    }, (error) => {
+      fetch('https://geolocation-db.com/json/')
+      .then((response) => response.json())
+      .then((data) => {
+        setTestLocation([data.latitude, data.longitude]);
+      }).catch((error) => {
       });
+    });
   }, [navigate]);
 
   const handleSubmit = async (event) => {
@@ -97,6 +109,7 @@ const OnBoarding = () => {
 
   return (
     <>
+      {testLocation[0]} {testLocation[1]}
       <Nav minimal={true} setShowModal={() => {}} showModal={false} />
       <div className="onboarding">
         <h2>Create account</h2>
