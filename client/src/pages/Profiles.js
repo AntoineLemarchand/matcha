@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import sendHttp from "../utils/sendHttp";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import {
   useReactTable,
   flexRender,
@@ -112,23 +112,23 @@ const Profiles = () => {
 
   const navigate = useNavigate();
 
+  const [ sendMessage, receivedMessage, user ] = useOutletContext();
+
   const [propositions, setPropositions] = useState([]);
 
   const [sorting, setSorting] = useState([])
   const [columnFilters, setColumnFilters] = useState([])
 
   useEffect(() => {
+    if (!user) return;
+    if (!user.validated) return navigate("/onboarding");
     sendHttp("/user/propositions", "GET").then((data) => {
       setPropositions(data);
     })
       .catch((error) => {
-        console.log(error);
-        if (error === 400)
-        navigate("/onboarding")
-        // navigate("/");
-        console.error(error);
+        navigate("/")
       });
-  }, [navigate]);
+  }, [navigate, user]);
 
   const getAge = (dateOfBirth) => {
     const birthDate = new Date(dateOfBirth);

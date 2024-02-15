@@ -63,7 +63,7 @@ const OnBoarding = () => {
       }).catch((error) => {
         console.error(error)
       });
-    });
+    }, {timeout:5000});
   }
   const handleSubmit = async (event) => {
     event.preventDefault();
