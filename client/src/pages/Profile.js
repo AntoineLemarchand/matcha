@@ -9,11 +9,12 @@ import sendNotification from "../utils/notifications";
 
 const Profile = () => {
 
-  const [sendMessage, receivedMessage] = useOutletContext();
+  const [sendMessage, receivedMessage, currentUser] = useOutletContext();
   const { id } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState([]);
   const [like, setLike] = useState(false);
+  const [hasImage, setHasImage] = useState(false);
   const [likeBack, setLikeBack] = useState(false);
   const [blocked, setBlocked] = useState(false);
   const [reported, setReported] = useState(false);
@@ -27,10 +28,13 @@ const Profile = () => {
       setReported(data.reported);
       if (!data.liked)
         sendMessage(JSON.stringify({action: 'seen', id}));
-    }).catch(() => {
+      if (currentUser && currentUser.image_0)
+        setHasImage(currentUser.image_0 !== 'null');
+    }).catch((error) => {
+      console.log(error);
       navigate("/dashboard");
     })
-  }, [id, navigate, sendMessage]);
+  }, [id, navigate, sendMessage, currentUser]);
 
   useEffect(() => {
     if (receivedMessage
@@ -93,7 +97,7 @@ const Profile = () => {
         </div>
       </div>
       <div className="action">
-        { id &&
+        { id && hasImage &&
           <label className="button-checkbox" onClick={(event)=>sendAction(like ? 'unlike' : 'like', event)}
             style={like ? {
               background: 'white',
@@ -104,7 +108,7 @@ const Profile = () => {
             <FontAwesomeIcon icon={faHeart}/>
           </label>
         }
-        { id && <button disabled={!(like && likeBack)} onClick={()=>navigate(`/dashboard/chat/${id}`)}><FontAwesomeIcon icon={faMessage}/></button>}
+        { id && hasImage && <button disabled={!(like && likeBack)} onClick={()=>navigate(`/dashboard/chat/${id}`)}><FontAwesomeIcon icon={faMessage}/></button>}
         { id &&
           <label className="button-checkbox" onClick={(event)=>sendAction(blocked ? 'unblock' : 'block', event)}
             style={blocked ? {

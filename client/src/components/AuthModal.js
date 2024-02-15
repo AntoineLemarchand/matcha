@@ -25,7 +25,6 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
       body: JSON.stringify({ email, password }),
     })
     .then((response) => {
-      console.log(response.status === 201)
       if (response.status === 201) {
         navigate("/dashboard");
       };
