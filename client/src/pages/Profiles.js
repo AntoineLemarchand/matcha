@@ -15,6 +15,7 @@ import {
 import {
   rankItem,
 } from "@tanstack/match-sorter-utils";
+import ImagePreview from "../components/ImagePreview";
 
 function DebouncedInput({ value: initialValue, onChange, debounce = 500, ...props }) {
   const [value, setValue] = React.useState(initialValue)
@@ -116,14 +117,6 @@ const Profiles = () => {
   const [sorting, setSorting] = useState([])
   const [columnFilters, setColumnFilters] = useState([])
 
-  const getImageURL = (imageBuffer) => {
-    if (imageBuffer.startsWith('/')) {
-      return `${process.env.REACT_APP_API_URL}${imageBuffer}`;
-    } else {
-      return imageBuffer.toString("base64");
-    }
-  }
-
   useEffect(() => {
     sendHttp("/user/propositions", "GET").then((data) => {
       setPropositions(data);
@@ -152,7 +145,7 @@ const Profiles = () => {
     createColumnHelper().accessor('image_0', {
       header: 'Image',
       enableColumnFilter: false,
-      cell: (Info) => <img src={getImageURL(Info.getValue())} alt="profile" />,
+      cell: (Info) => <ImagePreview image={Info.getValue()} />,
     }),
     createColumnHelper().accessor(row => `${row.first_name} ${row.last_name}`, {
       header: 'Name',

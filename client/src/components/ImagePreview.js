@@ -1,13 +1,14 @@
-const getImageURL = (image) => {
-  // if image buffer is a relative path render from static backend
-  if (image.startsWith('/')) {
-    return `${process.env.REACT_APP_API_URL}${image}`;
-  } else {
-    return image.toString("base64");
-  }
-}
 
 const ImagePreview = ({ image, style, className, id }) => {
+  const getImageURL = (image) => {
+    // if image buffer is a relative path render from static backend
+    if (image.startsWith('/')) {
+      return `${process.env.REACT_APP_API_URL}${image}`;
+    } else {
+      return image.toString("base64");
+    }
+  }
+
   return (
     image && image !== "null" &&
       <img
