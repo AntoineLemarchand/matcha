@@ -47,6 +47,24 @@ const OnBoarding = () => {
       });
   }, [navigate]);
 
+  const syncLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { latitude, longitude } = position.coords;
+      setFormData((prevState) => ({
+        ...prevState, latitude, longitude
+      }));
+    }, () => {
+      fetch('https://geolocation-db.com/json/')
+      .then((response) => response.json())
+      .then((data) => {
+        setFormData((prevState) => ({
+          ...prevState, latitude: data.latitude, longitude: data.longitude
+        }));
+      }).catch((error) => {
+        console.error(error)
+      });
+    });
+  }
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -255,7 +273,10 @@ const OnBoarding = () => {
               })
             }
           </section>
-          <input type="submit" value="Submit" />
+          <section>
+            <input type="submit" value="Submit" className="primary-button"/>
+            <button type="button" className="primary-button" onClick={syncLocation}>Sync location</button>
+          </section>
         </form>
       </div>
     </>

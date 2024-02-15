@@ -166,6 +166,7 @@ class User {
 
       let count = 0;
       user.fame = await User.getFame(user.id);
+      if (isNaN(user.fame)) user.fame = 0;
       user.count = User.countTags(user.tags, currentUser.tags);
       // get distance in km
       user.distance = Math.sqrt(
@@ -201,6 +202,7 @@ class User {
       for (const user of result) {
         const currentUser = await this.getFromId(id);
         user.fame = await User.getFame(user.id);
+        if (isNaN(user.fame)) user.fame = 0;
         user.count = User.countTags(user.tags, currentUser.tags);
       }
 

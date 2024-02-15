@@ -5,6 +5,8 @@ async function getAll(id, res) {
   try {
     const result = await user.getFromId(id);
     delete result.password;
+    result.fame = await User.getFame(id);
+    if (isNaN(user.fame)) user.fame = 0;
     return res.status(200).json(result);
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -23,6 +25,7 @@ async function getById(id, req, res) {
       result.reported = await User.hasReported(id, req.params.id)
     }
     result.fame = await User.getFame(id);
+    if (isNaN(user.fame)) user.fame = 0;
     return res.status(200).json(result);
   } catch (error) {
     return res.status(400).json({ message: error.message });
