@@ -62,6 +62,8 @@ const Dashboard = () => {
           });
         });
         break;
+      default:
+        break;
     }
   }
 

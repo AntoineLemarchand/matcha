@@ -30,7 +30,7 @@ const Profile = () => {
     }).catch(() => {
       navigate("/dashboard");
     })
-  }, [id, navigate]);
+  }, [id, navigate, sendMessage]);
 
   useEffect(() => {
     if (receivedMessage
@@ -49,6 +49,7 @@ const Profile = () => {
         case 'unlike':
           setLikeBack(false);
           break;
+        default: break;
       }
     }
   }, [receivedMessage, id]);

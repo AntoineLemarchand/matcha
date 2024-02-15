@@ -8,7 +8,6 @@ import Interests from "../components/Interests"
 const OnBoarding = () => {
   const navigate = useNavigate();
   const [id, setId] = useState(0);
-  const [testLocation, setTestLocation] = useState([0, 0]); // [latitude, longitude
   const [formData, setFormData] = useState({
     email: "",
     first_name: "",
@@ -42,18 +41,23 @@ const OnBoarding = () => {
         setId(data.user.id);
       }
     })
-    .catch((error) => {
+    .catch(() => {
       navigate("/");
     });
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
-      setTestLocation([latitude, longitude]);
-    }, (error) => {
+      setFormData((prevState) => ({
+        ...prevState, latitude, longitude
+      }));
+    }, () => {
       fetch('https://geolocation-db.com/json/')
       .then((response) => response.json())
       .then((data) => {
-        setTestLocation([data.latitude, data.longitude]);
+        setFormData((prevState) => ({
+          ...prevState, latitude: data.latitude, longitude: data.longitude
+        }));
       }).catch((error) => {
+        console.error(error)
       });
     });
   }, [navigate]);
@@ -109,7 +113,6 @@ const OnBoarding = () => {
 
   return (
     <>
-      {testLocation[0]} {testLocation[1]}
       <Nav minimal={true} setShowModal={() => {}} showModal={false} />
       <div className="onboarding">
         <h2>Create account</h2>
