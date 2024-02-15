@@ -274,7 +274,7 @@ const OnBoarding = () => {
             }
           </section>
           <section>
-            <input type="submit" value="Submit" className="primary-button"/>
+            <button type="submit" className="primary-button">Submit</button>
             <button type="button" className="primary-button" onClick={syncLocation}>Sync location</button>
           </section>
         </form>
