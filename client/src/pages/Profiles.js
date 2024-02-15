@@ -163,9 +163,9 @@ const Profiles = () => {
       header: 'Age',
       cell: (Info) => <span>{Info.getValue()}</span>,
     }),
-    createColumnHelper().accessor(row => row.location ?? 0, {
+    createColumnHelper().accessor(row => Math.floor(row.distance ?? 0), {
       header: 'Distance',
-      cell: (Info) => <span>{Info.getValue()}</span>,
+      cell: (Info) => <span>{Math.floor(Info.getValue())}kms</span>,
     }),
     createColumnHelper().accessor(row => Math.round(row.fame * 100) / 100, {
       header: 'Fame',

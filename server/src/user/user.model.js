@@ -158,6 +158,11 @@ class User {
       let count = 0;
       user.fame = await User.getFame(user.id);
       user.count = User.countTags(user.tags, currentUser.tags);
+      // get distance in km
+      user.distance = Math.sqrt(
+        Math.pow(user.latitude - currentUser.latitude, 2) +
+          Math.pow(user.longitude - currentUser.longitude, 2)
+      );
       propositions.push([user, count]);
     }
 
