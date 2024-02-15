@@ -8,6 +8,7 @@ import Interests from "../components/Interests"
 const OnBoarding = () => {
   const navigate = useNavigate();
   const [id, setId] = useState(0);
+  const [submitInfo, setSubmitInfo] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     first_name: "",
@@ -84,7 +85,7 @@ const OnBoarding = () => {
       .then((data) => {
           navigate("/dashboard");
       }).catch((error) => {
-        console.error(error);
+          setSubmitInfo("An error occured, please try again");
       })
   }
 
@@ -259,7 +260,9 @@ const OnBoarding = () => {
               })
             }
           </section>
-          <input type="submit" defaultValue="Submit" />
+          {submitInfo}
+          <button type="submit" class="primary-button">Submit</button>
+          <br/>
         </form>
       </div>
     </>
