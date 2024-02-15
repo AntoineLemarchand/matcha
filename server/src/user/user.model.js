@@ -138,6 +138,13 @@ class User {
     }
   }
 
+  isInterestedIn(gender, interest) {
+    const isInterested =
+      (gender === interest) ||
+      (interest === 'everyone');
+    return isInterested;
+  }
+
   async getPropositions(id, amount = 10) {
     const currentUser = await this.getFromId(id);
     const otherUsers = await this.getAll();
@@ -147,12 +154,14 @@ class User {
       const hasLiked = await User.hasLiked(id, user.id);
       const hasBlocked = await User.hasBlocked(id, user.id);
       const hasReported = await User.hasReported(id, user.id);
+      const userIsInterested = this.isInterestedIn(user.gender_identity, currentUser.gender_interest);
+      const currentUserIsInterested = this.isInterestedIn(currentUser.gender_identity, user.gender_interest);
       if (user.id === id
         || hasLiked
         || hasBlocked
         || hasReported
-        || currentUser.gender_identity != user.gender_interest
-        || currentUser.gender_interest != user.gender_identity
+        || !userIsInterested
+        || !currentUserIsInterested
       ) continue;
 
       let count = 0;
