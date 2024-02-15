@@ -92,7 +92,7 @@ async function forgotPassword(req, res) {
       from: process.env.MAIL_USERNAME,
       to: email,
       subject: "Matcha: Password Recovery",
-      html: `<a href="${process.env.SERVER_URL}:${process.env.SERVER_PORT}/recovery/${code}">Click here to recover your password</a>`,
+      html: `<a href="https://${process.env.SERVER_URL}:${process.env.SERVER_PORT}/recovery/${code}">Click here to recover your password</a>`,
     };
     try {
       await transporter.sendMail(mailOptions);
@@ -116,6 +116,8 @@ const validateRecoveryCode = async (req, res) => {
     const result = await db.query(sql, params);
     if (result.length === 0) {
       return res.status(400).json({ message: "Invalid recovery code" });
+    } else if (result.date_created < new Date(Date.now() - 3600000)) {
+      return res.status(400).json({ message: "Recovery code expired" });
     }
     return res.status(200).json({ message: "Recovery code valid" });
   } catch (error) {
@@ -135,10 +137,11 @@ const passwordChange = async (req, res) => {
     if (result.length === 0) {
       return res.status(400).json({ message: "Invalid recovery code" });
     }
+    const user = await (new User()).getFromId(result[0].user_id);
+    const newHash = await User.hashPassword(password);
+    User.update(user.id, { password: newHash })
     sql = `DELETE FROM recovery_code WHERE code = ?`;
     await db.query(sql, params);
-    const user = await (new User()).getFromId(result[0].user_id);
-    User.update(user.id, { password: await User.hashPassword(password) })
     return res.status(200).json({ message: "Password changed" });
   } catch (error) {
     return res.status(400).json({ message: error.message });

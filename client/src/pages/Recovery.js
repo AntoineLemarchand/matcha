@@ -61,11 +61,12 @@ const Recovery = () => {
       body: JSON.stringify({ code, password }),
     }).then((response) => {
       if (response.ok) {
-      setInfo("Password changed");
+        setInfo("Password changed");
       } else {
-      setInfo("Invalid recovery code");
+        return response.json();
       }
-    }).catch((error) => {
+    }).then((data) => setPChangeInfo(data.message ?? ''))
+      .catch((error) => {
       console.error('There was an error!', error);
     });
   }
