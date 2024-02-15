@@ -87,7 +87,7 @@ const OnBoarding = () => {
       .then((data) => {
         sendNotification("User updated", "success");
       }).catch((error) => {
-        sendNotification("Email already taken", "error");
+        sendNotification("Could not update Profile", "error");
       })
   }
 
