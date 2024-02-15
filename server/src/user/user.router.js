@@ -57,6 +57,8 @@ router.get("/:id", async (req, res) => {
 });
 
 router.put("/:id", imageUpload, async (req, res) => {
+  console.log(req);
+  if (req.fileValidationError) return res.status(400).json({ message: req.fileValidationError });
   if (!req.cookies.token) return res.status(401).json({ message: "Unauthorized" })
   const id = jwt.verify(req.cookies.token, process.env.JWT_SECRET).id;
   if (!id) return res.status(401).json({ message: "Unauthorized" });

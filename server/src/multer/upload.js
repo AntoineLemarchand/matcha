@@ -18,10 +18,8 @@ const imageUpload = multer({
         if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
             cb(null, true);
         } else {
-            cb(null, false);
-            const err = new Error('Only .png, .jpg and .jpeg format allowed!')
-            err.name = 'ExtensionError'
-            return cb(err);
+          req.fileValidationError = "Forbidden extension";
+          return cb(null, false, req.fileValidationError);
         }
     },
 }).array('uploadedImages', 5)
