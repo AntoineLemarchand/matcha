@@ -10,7 +10,6 @@ mkdir -p /etc/nginx/ssl/private
 
 envsubst '$SERVER_PORT' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 echo "[INFO] Nginx configuration initialized"
-cat /etc/nginx/nginx.conf
 
 # Generate certificate and key if they don't exist
 if [ ! -f "$CERT_PATH" ] || [ ! -f "$KEY_PATH" ]; then

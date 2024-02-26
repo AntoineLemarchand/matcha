@@ -32,8 +32,8 @@ const Dashboard = () => {
               navigate(`/dashboard/chat/${data.from}`);
             });
           });
-          break;
         }
+        break;
       case 'like':
         sendHttp(`/user/${data.from}`).then((user) => {
           sendNotification(`${user.first_name} ${user.last_name} liked you`, 'info', () => {

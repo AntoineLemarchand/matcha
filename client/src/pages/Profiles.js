@@ -112,6 +112,7 @@ const Profiles = () => {
 
   const navigate = useNavigate();
 
+  // eslint-disable-next-line no-unused-vars
   const [ sendMessage, receivedMessage, user ] = useOutletContext();
 
   const [propositions, setPropositions] = useState([]);
@@ -121,7 +122,7 @@ const Profiles = () => {
 
   useEffect(() => {
     if (!user) return;
-    if (!user.validated) return navigate("/onboarding");
+    if (!user.initialized) return navigate("/onboarding");
     sendHttp("/user/propositions", "GET").then((data) => {
       setPropositions(data);
     })

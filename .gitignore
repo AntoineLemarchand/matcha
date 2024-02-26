@@ -27,3 +27,4 @@ yarn-error.log*
 /db
 /certs
 /server/images/
+/client/build/

@@ -45,6 +45,7 @@ const OnBoarding = () => {
     .catch(() => {
       navigate("/");
     });
+    try {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
         setFormData((prevState) => ({
@@ -61,6 +62,8 @@ const OnBoarding = () => {
           console.error(error)
         });
       }, {timeout:5000});
+    } catch (error) {
+    }
   }, [navigate]);
 
   const handleSubmit = async (event) => {
@@ -82,9 +85,10 @@ const OnBoarding = () => {
     }
 
     sendHttp(`/user/${id}`, "PUT", body, {})
-      .then((data) => {
-          navigate("/dashboard");
-      }).catch((error) => {
+      .then(() => {
+        console.log("User updated");
+        navigate("/dashboard");
+      }).catch(() => {
           setSubmitInfo("An error occured, please try again");
       })
   }

@@ -29,6 +29,7 @@ function DebouncedInput({ value: initialValue, onChange, debounce = 500, ...prop
     }, debounce)
 
     return () => clearTimeout(timeout)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
   return (
@@ -48,7 +49,7 @@ function Filter({ column, table }) {
       typeof firstValue === 'number'
         ? []
         : Array.from(column.getFacetedUniqueValues().keys()).sort(),
-    [column.getFacetedUniqueValues()]
+    [column, firstValue]
   )
 
   return typeof firstValue === 'number' ? (

@@ -13,7 +13,8 @@ const History = () => {
 
   const navigate = useNavigate();
 
-  const [_sendMessage, _receivedMessage, user] = useOutletContext();
+  // eslint-disable-next-line no-unused-vars
+  const [sendMessage, receivedMessage, user] = useOutletContext();
 
   const [views, setViews] = useState([]);
   const [sorting, setSorting] = useState([])
@@ -70,6 +71,8 @@ const History = () => {
           return row.user_id === user.id ? row.viewed_user_first_name + ' ' + row.viewed_user_last_name : row.user_first_name + ' ' + row.user_last_name;
         case 'like':
           return row.user_id === user.id ? 'You liked ' + row.viewed_user_first_name + ' ' + row.viewed_user_last_name : row.user_first_name + ' ' + row.user_last_name + ' liked you';
+        default:
+          return 'Unknown';
       }
     }, {
       header: 'Action',
