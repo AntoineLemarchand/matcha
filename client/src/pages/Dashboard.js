@@ -16,7 +16,6 @@ const Dashboard = () => {
 
   const { sendMessage } = useWebSocket(
       process.env.REACT_APP_WS_URL + '/connection', {
-      onError: (event) => console.error(event),
       onMessage: handleReceiveMessage,
   })
 

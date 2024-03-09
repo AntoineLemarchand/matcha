@@ -24,8 +24,8 @@ const Profile = () => {
       setUser(data);
       setLike(data.liked);
       setLikeBack(data.like_back);
-      setBlocked(data.blocked);
-      setReported(data.reported);
+      setBlocked(data.blocked[1]);
+      setReported(data.reported[1]);
       if (!data.liked)
         sendMessage(JSON.stringify({action: 'seen', id}));
       if (currentUser && currentUser.image_0)

@@ -85,6 +85,14 @@ export default function setupWss(server) {
           if (!data.id) return;
           User.report(userId, data.id);
           break;
+        case 'block':
+          if (!data.id) return;
+          User.block(userId, data.id);
+          break;
+        case 'unblock':
+          if (!data.id) return;
+          User.unblock(userId, data.id);
+          break;
       }
     });
 

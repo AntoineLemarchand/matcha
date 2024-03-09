@@ -36,7 +36,9 @@ const Chat = () => {
   useEffect(() => {
     if (!id) return navigate("/dashboard");
     sendHttp(`/user/${id}`).then((data) => {
-      if (!data.liked || !data.like_back) return navigate("/dashboard");
+      console.table(data);
+      if (!data.liked || !data.like_back
+        || data.blocked[0] || data.blocked[1]) return navigate("/dashboard");
       setUser(data);
     }).catch(() => {
       navigate("/dashboard");

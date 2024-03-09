@@ -21,8 +21,14 @@ async function getById(id, req, res) {
     if (id !== req.params.id) {
       result.liked = await User.hasLiked(id, req.params.id);
       result.like_back = await User.hasLiked(req.params.id, id);
-      result.blocked = await User.hasBlocked(id, req.params.id)
-      result.reported = await User.hasReported(id, req.params.id)
+      result.blocked = [
+        await User.hasBlocked(req.params.id, id),
+        await User.hasBlocked(id, req.params.id)
+      ];
+      result.reported = [
+        await User.hasReported(req.params.id, id),
+        await User.hasReported(id, req.params.id)
+      ]
     }
     result.fame = await User.getFame(id);
     if (isNaN(user.fame)) user.fame = 0;

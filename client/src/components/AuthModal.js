@@ -16,6 +16,7 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
     e.preventDefault();
     if (isSignUp && password !== confirmPassword) {
       setError("Passwords do not match");
+      return;
     }
     fetch(`${process.env.REACT_APP_API_URL}/auth/${isSignUp ? "signup" : "login"}`, {
       method: "POST",
