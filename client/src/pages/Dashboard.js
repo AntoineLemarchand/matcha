@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ChatContainer from "../components/ChatContainer";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import useWebSocket from "react-use-websocket";
 import sendHttp from "../utils/sendHttp";
 import sendNotification from "../utils/notifications";
@@ -71,6 +71,23 @@ const Dashboard = () => {
       document.querySelector('.menu-container').style.right = '0%'
   }
 
+  const signOut = () => {
+    fetch(`${process.env.REACT_APP_API_URL}/auth/logout`, {
+      method: "GET",
+      headers: {
+      "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }).then((response) => {
+      if (response.status === 200) {
+        navigate("/");
+      } else {
+        console.log('error')
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
   useEffect(() => {
     sendHttp("/user", "GET").then((data) => {
       setUser(data);
@@ -89,6 +106,9 @@ const Dashboard = () => {
         <div className="top-bar">
           <button onClick={openMenu}>
             <FontAwesomeIcon icon={faBars}/>
+          </button>
+          <button onClick={signOut}>
+            <FontAwesomeIcon icon={faSignOutAlt}/>
           </button>
         </div>
         <div className="dashboard-content">
