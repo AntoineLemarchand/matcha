@@ -101,7 +101,8 @@ const Recovery = () => {
   } else {
     validateRecoveryCode();
     return (
-    <div className='recovery'>
+    <main className='recovery'>
+      <header></header>
       <form onSubmit={handlePasswordChange}>
         <img src={colorLogo} alt="logo" style={{maxWidth: "70%"}}/>
         <h1>Password Recovery</h1>
@@ -110,7 +111,8 @@ const Recovery = () => {
         <button className="primary-button">Change password</button>
         <p>{pChangeInfo}</p>
       </form>
-    </div>
+      <footer></footer>
+    </main>
     )
   }
 };

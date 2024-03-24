@@ -86,7 +86,6 @@ const OnBoarding = () => {
 
     sendHttp(`/user/${id}`, "PUT", body, {})
       .then(() => {
-        console.log("User updated");
         navigate("/dashboard");
       }).catch(() => {
           setSubmitInfo("An error occured, please try again");

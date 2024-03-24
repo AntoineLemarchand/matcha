@@ -81,9 +81,7 @@ const Dashboard = () => {
     }).then((response) => {
       if (response.status === 200) {
         navigate("/");
-      } else {
-        console.log('error')
-      }
+      } else {}
     }).catch((error) => {
       console.error(error);
     });
@@ -103,20 +101,21 @@ const Dashboard = () => {
     <div className="dashboard">
       { user && <ChatContainer user={user} />}
       <div className="main-container">
-        <div className="top-bar">
+        <header className="top-bar">
           <button onClick={openMenu}>
             <FontAwesomeIcon icon={faBars}/>
           </button>
           <button onClick={signOut}>
             <FontAwesomeIcon icon={faSignOutAlt}/>
           </button>
-        </div>
-        <div className="dashboard-content">
+        </header>
+        <main className="dashboard-content">
           <Outlet context={[sendMessage, receivedMessage, user]}/>
-        </div>
+        </main>
         <div className="card-container">
         </div>
       </div>
+      <footer></footer>
     </div>
   );
 };
