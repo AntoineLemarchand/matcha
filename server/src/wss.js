@@ -95,7 +95,7 @@ export default function setupWss(server) {
           break;
         case 'readNotifications':
           User.readNotifications(userId);
-        break;
+          break;
       }
     });
 

@@ -21,7 +21,7 @@ const Dashboard = () => {
   })
 
   async function addNotification(data) {
-    const previousNotifications = notifications;
+    const previousNotifications = [...notifications];
     const notification = {
       type: 'info',
       time: new Date(),
@@ -36,8 +36,7 @@ const Dashboard = () => {
           notification.action = () => {
             navigate(`/dashboard/chat/${data.from}`);
           }
-          previousNotifications.unshift(notification)
-          setNotifications(previousNotifications)
+          setNotifications(prevNotifications => [notification, ...prevNotifications]);
         }
         break;
       case 'like':
@@ -47,7 +46,7 @@ const Dashboard = () => {
           navigate(`/dashboard/profile/${data.from}`);
         }
         previousNotifications.unshift(notification)
-        setNotifications(previousNotifications)
+        setNotifications(prevNotifications => [notification, ...prevNotifications]);
         break;
       case 'unlike':
         user = await sendHttp(`/user/${data.from}`)
@@ -56,7 +55,7 @@ const Dashboard = () => {
           navigate(`/dashboard/profile/${data.from}`);
         }
         previousNotifications.unshift(notification)
-        setNotifications(previousNotifications)
+        setNotifications(prevNotifications => [notification, ...prevNotifications]);
         break;
       case 'match':
         user = await sendHttp(`/user/${data.from}`)
@@ -65,7 +64,7 @@ const Dashboard = () => {
           navigate(`/dashboard/profile/${data.from}`);
         }
         previousNotifications.unshift(notification)
-        setNotifications(previousNotifications)
+        setNotifications(prevNotifications => [notification, ...prevNotifications]);
         break;
       case 'seen':
         user = await sendHttp(`/user/${data.from}`)
@@ -74,7 +73,7 @@ const Dashboard = () => {
           navigate(`/dashboard/profile/${data.from}`);
         }
         previousNotifications.unshift(notification)
-        setNotifications(previousNotifications)
+        setNotifications(prevNotifications => [notification, ...prevNotifications]);
         break;
       default:
         break;

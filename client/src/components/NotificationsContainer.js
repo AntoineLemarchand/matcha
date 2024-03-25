@@ -12,6 +12,7 @@ const NotificationsContainer = ({notifications, clearNotifications, readMessages
 
   const closeNotifications = () => {
     readMessages();
+    clearNotifications()
     document.querySelector('.notifications-container').style.left = '100%'
   }
 
