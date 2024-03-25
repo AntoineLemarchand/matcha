@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
   latitude FLOAT,
   password VARCHAR(255) NOT NULL,
   initialized BOOLEAN NOT NULL DEFAULT FALSE,
+  verified BOOLEAN NOT NULL DEFAULT FALSE,
   online BOOLEAN NOT NULL DEFAULT FALSE,
   last_seen TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
@@ -79,6 +80,15 @@ CREATE TABLE IF NOT EXISTS history (
   PRIMARY KEY (id),
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (viewed_user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS verification_code (
+  id INT NOT NULL AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  code VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  UNIQUE (user_id)
 );
 
 CREATE TABLE IF NOT EXISTS recovery_code (

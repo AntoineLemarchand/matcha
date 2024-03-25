@@ -4,6 +4,28 @@ import { randomUUID } from "crypto";
 import db from "../db.js";
 import nodemailer from "nodemailer";
 
+async function sendEmail(email, subject, message) {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        type: 'OAuth2',
+        user: process.env.MAIL_USERNAME,
+        pass: process.env.MAIL_PASSWORD,
+        clientId: process.env.OAUTH_CLIENTID,
+        clientSecret: process.env.OAUTH_CLIENT_SECRET,
+        refreshToken: process.env.OAUTH_REFRESH_TOKEN
+      }
+    })
+
+    const mailOptions = {
+      from: process.env.MAIL_USERNAME,
+      to: email,
+      subject: subject,
+      html: message,
+    };
+    await transporter.sendMail(mailOptions);
+}
+
 export async function signup(req, res) {
   const email = req.body.email;
   const password = req.body.password;
@@ -19,7 +41,10 @@ export async function signup(req, res) {
     return res.status(400).json({ message: "Email already taken" });
   }
   try {
-    await user.saveToDB();
+    const result = await user.saveToDB();
+    const subject = "Matcha: Account Verification";
+    const message = `<a href="https://${process.env.SERVER_URL}:${process.env.SERVER_PORT}/verify/${result.code}">Click here to verify your account</a>`;
+    await sendEmail(email, subject, message)
     const newUser = await user.getFromEmail(email);
     const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET);
     res.cookie("token", token, { httpOnly: true });
@@ -41,6 +66,20 @@ export async function login(req, res) {
     return res.status(400).json({ message: "Invalid credentials" });
   }
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+  res.cookie("token", token, { httpOnly: true, sameSite: true });
+  return res.status(200).json({ message: "User logged in" });
+}
+
+export async function validate(req, res) {
+  const code = req.body.code;
+  if (!code) {
+    return res.status(400).json({ message: "Missing code" });
+  }
+  const userId = await User.verifyCode(code);
+  if (!userId) {
+    return res.status(401).json({ message: "Invalid code" });
+  }
+  const token = jwt.sign({ id: userId }, process.env.JWT_SECRET);
   res.cookie("token", token, { httpOnly: true, sameSite: true });
   return res.status(200).json({ message: "User logged in" });
 }
@@ -76,26 +115,10 @@ async function forgotPassword(req, res) {
 
   try {
     await db.query(sql, params);
-    let transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        type: 'OAuth2',
-        user: process.env.MAIL_USERNAME,
-        pass: process.env.MAIL_PASSWORD,
-        clientId: process.env.OAUTH_CLIENTID,
-        clientSecret: process.env.OAUTH_CLIENT_SECRET,
-        refreshToken: process.env.OAUTH_REFRESH_TOKEN
-      }
-    })
-
-    let mailOptions = {
-      from: process.env.MAIL_USERNAME,
-      to: email,
-      subject: "Matcha: Password Recovery",
-      html: `<a href="https://${process.env.SERVER_URL}:${process.env.SERVER_PORT}/recovery/${code}">Click here to recover your password</a>`,
-    };
     try {
-      await transporter.sendMail(mailOptions);
+      const subject = "Matcha: Password Recovery";
+      const message = `<a href="https://${process.env.SERVER_URL}:${process.env.SERVER_PORT}/recovery/${code}">Click here to recover your password</a>`;
+      await sendEmail(email, subject, message)
       return res.status(200).json({ message: "Recovery code sent" });
     } catch (error) {
       return res.status(400).json({ message: error.message });
@@ -148,4 +171,4 @@ const passwordChange = async (req, res) => {
   }
 }
 
-export default { signup, login, verify, forgotPassword, validateRecoveryCode, passwordChange }
+export default { signup, login, verify, validate, forgotPassword, validateRecoveryCode, passwordChange }

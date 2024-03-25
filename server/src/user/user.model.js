@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import db from '../db.js';
+import { randomUUID } from "crypto";
 
 class User {
   constructor(email, password) {
@@ -36,9 +37,14 @@ class User {
 
   async saveToDB() {
     const sql = `INSERT INTO users (email, password) VALUES (?, ?)`;
+    const verifyCodeSql = `INSERT INTO verification_code (user_id, code) VALUES (?, ?)`;
     try {
       const params = [this.email, await User.hashPassword(this.password)];
       const result = await db.query(sql, params);
+      const userId = result.insertId;
+      const verifyCodeParams = [userId, randomUUID()];
+      await db.query(verifyCodeSql, verifyCodeParams);
+      result.code = verifyCodeParams[1];
       return result;
     } catch (error) {
       throw error;
@@ -351,6 +357,24 @@ class User {
       return ret;
     } catch (error) {
       throw error;
+    }
+  }
+
+  static async verifyCode(code) {
+    const sql = `SELECT user_id FROM verification_code WHERE code = ?`;
+    try {
+      const result = await db.query(sql, [code]);
+      if (result.length === 0) {
+        return;
+      }
+      const removeSql = `DELETE FROM verification_code WHERE code = ?`;
+      const deleteResult = await db.query(removeSql, [code]);
+      console.log(deleteResult);
+      const updateVerifiedSql = `UPDATE users SET verified = 1 WHERE id = ?`;
+      await db.query(updateVerifiedSql, [result[0].user_id]);
+      return result[0].user_id;
+    } catch (error) {
+      return;
     }
   }
 }

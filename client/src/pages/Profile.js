@@ -4,7 +4,7 @@ import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import ImagePreview from "../components/ImagePreview";
 import Interests from "../components/Interests";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBan, faExclamation, faHeart, faMessage } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faCheck, faExclamation, faHeart, faMessage, faTimes } from "@fortawesome/free-solid-svg-icons";
 import sendNotification from "../utils/notifications";
 
 const Profile = () => {
@@ -72,7 +72,10 @@ const Profile = () => {
     <div id="profile">
       <div className="content">
         <div className="infos">
-          <h1>{user.first_name} {user.last_name}: {Math.round(user.fame * 100) / 100}</h1>
+          <h1>
+            {user.first_name} {user.last_name}: {Math.round(user.fame * 100) / 100}
+            &nbsp;{user.verified ? <FontAwesomeIcon icon={faCheck}/> : <FontAwesomeIcon icon={faTimes}/>}
+          </h1>
           <p>{user.biography}</p>
           {user.online ? (
             <p>Online</p>

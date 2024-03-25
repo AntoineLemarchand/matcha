@@ -9,6 +9,7 @@ import Likes from "./pages/Likes";
 import Chat from "./pages/Chat";
 import History from "./pages/History";
 import Recovery from "./pages/Recovery";
+import Verify from "./pages/Verify";
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/onboarding" element={<OnBoarding />} />
+        <Route path="/verify/:code" element={<Verify />} />
         <Route path="/recovery" element={<Recovery />} />
         <Route path="/recovery/:code" element={<Recovery />} />
         <Route path="/dashboard" element={<Dashboard />}>
