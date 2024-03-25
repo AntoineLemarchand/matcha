@@ -31,7 +31,6 @@ const Profile = () => {
       if (currentUser && currentUser.image_0)
         setHasImage(currentUser.image_0 !== 'null');
     }).catch((error) => {
-      console.log(error);
       navigate("/dashboard");
     })
   }, [id, navigate, sendMessage, currentUser]);
