@@ -95,8 +95,9 @@ class User {
     const params = [...Object.values(userData), id];
 
     try {
-      const result = await db.query(sql, params);
-      return result;
+      await db.query(sql, params);
+      const result = await db.query(`SELECT id, email FROM users WHERE id = ?`, [id]);
+      return result[0];
     } catch (error) {
       throw error;
     }
@@ -368,8 +369,7 @@ class User {
         return;
       }
       const removeSql = `DELETE FROM verification_code WHERE code = ?`;
-      const deleteResult = await db.query(removeSql, [code]);
-      console.log(deleteResult);
+      await db.query(removeSql, [code]);
       const updateVerifiedSql = `UPDATE users SET verified = 1 WHERE id = ?`;
       await db.query(updateVerifiedSql, [result[0].user_id]);
       return result[0].user_id;

@@ -4,7 +4,7 @@ import { randomUUID } from "crypto";
 import db from "../db.js";
 import nodemailer from "nodemailer";
 
-async function sendEmail(email, subject, message) {
+export async function sendEmail(email, subject, message) {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -171,4 +171,4 @@ const passwordChange = async (req, res) => {
   }
 }
 
-export default { signup, login, verify, validate, forgotPassword, validateRecoveryCode, passwordChange }
+export default { sendEmail, signup, login, verify, validate, forgotPassword, validateRecoveryCode, passwordChange }

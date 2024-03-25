@@ -1,3 +1,6 @@
+import { randomUUID } from 'crypto';
+import { sendEmail } from '../auth/auth.controller.js';
+import db from '../db.js';
 import User from './user.model.js';
 
 async function getAll(id, res) {
@@ -41,7 +44,22 @@ async function getById(id, req, res) {
 async function update(req, res) {
   try {
     if (req.body.id) delete req.body.id;
-    await User.update(req.params.id, req.body);
+    var previous = null;
+    if (req.body.email) {
+      const tempUser = new User();
+      previous = (await tempUser.getFromId(req.params.id)).email;
+    }
+    const user = await User.update(req.params.id, req.body);
+    if (previous && previous !== req.body.email) {
+      const deleteSql = `UPDATE users SET verified = 0 WHERE id = ?`;
+      await db.query(deleteSql, [user.id]);
+      const sql = `INSERT INTO verification_code (user_id, code) VALUES (?, ?)`;
+      const code = randomUUID();
+      await db.query(sql, [user.id, code]);
+      const subject = "Matcha: Email Update";
+      const message = `<a href="https://${process.env.SERVER_URL}:${process.env.SERVER_PORT}/verify/${code}">Click here to verify your account</a>`;
+      await sendEmail(user.email, subject, message);
+    }
     return res.status(200).json({ message: "User updated" })
   } catch (error) {
     return res.status(400).json({ message: error.message });
