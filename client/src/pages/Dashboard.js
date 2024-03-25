@@ -143,6 +143,7 @@ const Dashboard = () => {
           </button>
           <button onClick={openNotifications}>
             <FontAwesomeIcon icon={faBell}/>
+            {notifications.length > 0 && <span className="notification-count">{notifications.length}</span>}
           </button>
           <button onClick={signOut}>
             <FontAwesomeIcon icon={faSignOutAlt}/>
