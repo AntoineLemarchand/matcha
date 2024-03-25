@@ -6,6 +6,7 @@ async function getAll(id, res) {
     const result = await user.getFromId(id);
     delete result.password;
     result.fame = await User.getFame(id);
+    result.notifications = await User.getNotifications(id);
     if (isNaN(user.fame)) user.fame = 0;
     return res.status(200).json(result);
   } catch (error) {

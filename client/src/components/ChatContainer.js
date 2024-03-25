@@ -1,6 +1,6 @@
 import ImagePreview from "./ImagePreview";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignOutAlt, faClose } from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt, faClose, faBell } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 
 const ChatContainer = ({user}) => {
@@ -34,6 +34,10 @@ const ChatContainer = ({user}) => {
     closeMenu();
   }
 
+  const openNotifications = () => {
+    console.log('open notifications')
+  }
+
   return (
     <div className="menu-container">
       <div className="menu-header">
@@ -42,6 +46,9 @@ const ChatContainer = ({user}) => {
           {user.first_name}
         </div>
         <div className="icons">
+          <button onClick={openNotifications}>
+            <FontAwesomeIcon icon={faBell}/>
+          </button>
           <button onClick={signOut}>
             <FontAwesomeIcon icon={faSignOutAlt}/>
           </button>

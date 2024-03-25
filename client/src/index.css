@@ -261,6 +261,8 @@ input[type="email"] {
   height: calc(100vh - 3rem);
   margin-top: 3rem;
   overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 .top-bar {
@@ -593,24 +595,11 @@ button {
   color: white;
 }
 
-@keyframes slideIn {
-0% {
-  transform: translateY(100%);
-}
-100% {
-  transform: translateY(0%);
-}
-}
-
 .notification {
-  position: fixed;
-  bottom: 2.4rem;
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  margin: 10px 0;
-  animation: slideIn 0.3s ease-in-out;
-  transition: transform 0.3s ease-out;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .notification.success {
@@ -652,5 +641,17 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+}
+
+.notifications-container {
+  background: white;
+  position: fixed;
+  text-align: center;
+  width: 100vw;
+  height: 100vh;
+  left: 100%;
+  display: flex;
+  z-index: 1000;
   justify-content: center;
 }
