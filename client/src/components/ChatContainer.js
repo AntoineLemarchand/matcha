@@ -1,6 +1,6 @@
 import ImagePreview from "./ImagePreview";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignOutAlt, faClose, faBell } from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt, faClose } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 
 const ChatContainer = ({user}) => {
