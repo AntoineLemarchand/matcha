@@ -33,6 +33,7 @@ const OnBoarding = () => {
         const date = new Date(data.user.date_of_birth);
         const formattedDate = date.toISOString().split('T')[0];
         delete data.user.last_seen;
+        delete data.user.verified;
         setFormData((prevState) => ({
           ...prevState,
           ...data.user,
@@ -59,10 +60,19 @@ const OnBoarding = () => {
             ...prevState, latitude: data.latitude, longitude: data.longitude
           }));
         }).catch((error) => {
-          console.error(error)
+          console.error(error, error.message)
         });
       }, {timeout:5000});
     } catch (error) {
+      fetch('https://geolocation-db.com/json/')
+      .then((response) => response.json())
+      .then((data) => {
+        setFormData((prevState) => ({
+          ...prevState, latitude: data.latitude, longitude: data.longitude
+        }));
+      }).catch((error) => {
+        console.error(error, error.message)
+      });
     }
   }, [navigate]);
 
