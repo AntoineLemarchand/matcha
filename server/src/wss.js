@@ -93,6 +93,9 @@ export default function setupWss(server) {
           if (!data.id) return;
           User.unblock(userId, data.id);
           break;
+        case 'readNotifications':
+          User.readNotifications(userId);
+          break;
       }
     });
 
@@ -116,6 +119,7 @@ export default function setupWss(server) {
         const userConnections = instanceMap.get(id);
         for (const ws of userConnections) {
           try {
+            User.saveNotification(id, message);
             if (ws.readyState === WebSocket.OPEN) {
               ws.send(JSON.stringify(message));
             }

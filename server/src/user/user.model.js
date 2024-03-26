@@ -361,6 +361,39 @@ class User {
     }
   }
 
+  static async getNotifications(userId) {
+    const sql = `SELECT * FROM notifications WHERE user_id = ? ORDER BY time_sent DESC`;
+    const params = [userId];
+    try {
+      const result = await db.query(sql, params);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async saveNotification(userId, message) {
+    const sql = `INSERT INTO notifications (user_id, message) VALUES (?, ?)`;
+    const params = [userId, message];
+    try {
+      const result = await db.query(sql, params);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async readNotifications(userId) {
+    const sql = `DELETE FROM notifications WHERE user_id = ?`;
+    const params = [userId];
+    try {
+      const result = await db.query(sql, params);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   static async verifyCode(code) {
     const sql = `SELECT user_id FROM verification_code WHERE code = ?`;
     try {
