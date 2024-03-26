@@ -84,7 +84,9 @@ const Profile = () => {
               new Date(user.last_seen).toLocaleDateString('en-US', {
                 day: '2-digit',
                 month: 'short',
-                year: 'numeric'
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
               })
             })</p>
           )}
