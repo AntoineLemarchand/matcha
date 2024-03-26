@@ -165,6 +165,11 @@ const Profiles = () => {
       header: 'Fame',
       cell: (Info) => <span>{Info.getValue()}</span>,
     }),
+    createColumnHelper().accessor(row => row.tags.split('|'), {
+      header: 'Tags',
+      filterFn: 'array',
+      cell: (Info) => <span>{Info.getValue().join(', ')}</span>,
+    }),
     createColumnHelper().accessor(row => row.count, {
       header: 'Tags in common',
       cell: (Info) => <span>{Info.getValue()}</span>,
@@ -181,11 +186,30 @@ const Profiles = () => {
     return itemRank.passed
   }
 
+  const arrayFilter = (row, columnId, value, addMeta) => {
+    const tags = row.getValue(columnId); // Get the array of tags
+    let passed = false;
+
+    for (const tag of tags) {
+      const itemRank = rankItem(tag, value); // Perform the search on each tag
+
+      if (itemRank.passed) {
+        passed = true;
+        break; // Break the loop if any tag matches the search
+      }
+    }
+
+    addMeta({ itemRank: { passed } }); // Add meta with the overall result
+
+    return passed;
+  };
+
   const tableInstance = useReactTable({
     columns,
     data: propositions,
     filterFns: {
       fuzzy: fuzzyFilter,
+      array: arrayFilter,
     },
     state: {
       sorting,
