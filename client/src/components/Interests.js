@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 
@@ -6,6 +6,10 @@ const Interests = ({edit, tags, onChange}) => {
 
   const [inputContent, setInputContent] = useState('');
   const [currentTags, setCurrentTags] = useState(tags);
+
+  useEffect(() => {
+    setCurrentTags(tags);
+  }, [tags])
 
   const updateTags = (event) => {
     event.preventDefault();
