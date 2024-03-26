@@ -21,8 +21,6 @@ const ChatContainer = ({user}) => {
     }).then((response) => {
       if (response.status === 200) {
         navigate("/");
-      } else {
-        console.log('error')
       }
     }).catch((error) => {
       console.error(error);

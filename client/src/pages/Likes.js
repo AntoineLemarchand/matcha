@@ -131,11 +131,9 @@ const Likes = () => {
       setLikes(data);
     })
       .catch((error) => {
-        console.log(error);
         if (error === 400)
-        navigate("/onboarding")
-        // navigate("/");
-        console.error(error);
+          navigate("/onboarding")
+        navigate("/");
       });
   }, [navigate]);
 

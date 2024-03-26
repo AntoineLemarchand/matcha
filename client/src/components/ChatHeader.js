@@ -37,8 +37,6 @@ const ChatHeader = ({user, tab, switchTab}) => {
     }).then((response) => {
       if (response.status === 200) {
         navigate("/");
-      } else {
-        console.log('error')
       }
     }).catch((error) => {
       console.error(error);
