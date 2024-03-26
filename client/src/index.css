@@ -261,7 +261,7 @@ input[type="email"] {
   height: calc(100vh - 3rem);
   margin-top: 3rem;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: auto;
   width: 100%;
 }
 
