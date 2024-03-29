@@ -18,6 +18,8 @@ const Dashboard = () => {
   const { sendMessage } = useWebSocket(
       process.env.REACT_APP_WS_URL + '/connection', {
       onMessage: handleReceiveMessage,
+      onClose: () => true,
+      shouldReconnect: (closeEvent) => true,
   })
 
   async function addNotification(data) {
