@@ -5,6 +5,7 @@ WORKDIR /app
 COPY /client/package*.json ./
 COPY .env ./
 RUN npm install
+RUN npm install -g serve
 
 COPY client/ .
 

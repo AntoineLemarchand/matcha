@@ -1,14 +1,14 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Nav from "../components/Nav";
 import ImageUpload from "../components/ImageUpload";
 import sendHttp from "../utils/sendHttp";
-import Interests from "../components/Interests"
+import Interests from "../components/Interests";
+import sendNotification from "../utils/notifications";
 
 const OnBoarding = () => {
   const navigate = useNavigate();
   const [id, setId] = useState(0);
-  const [submitInfo, setSubmitInfo] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     first_name: "",
@@ -29,41 +29,31 @@ const OnBoarding = () => {
 
   useEffect(() => {
     sendHttp('/auth/verify', 'GET').then((data) => {
-      if (data) {
-        const date = new Date(data.user.date_of_birth);
-        const formattedDate = date.toISOString().split('T')[0];
-        delete data.user.last_seen;
-        delete data.user.verified;
-        setFormData((prevState) => ({
-          ...prevState,
-          ...data.user,
-          date_of_birth: formattedDate,
-          initialized: 1,
-        }));
-        setId(data.user.id);
-      }
-    })
-    .catch(() => {
-      navigate("/");
-    });
-    try {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        setFormData((prevState) => ({
-          ...prevState, latitude, longitude
-        }));
-      }, () => {
-        fetch('https://geolocation-db.com/json/')
-        .then((response) => response.json())
-        .then((data) => {
+        if (data) {
+          const date = new Date(data.user.date_of_birth);
+          const formattedDate = date.toISOString().split('T')[0];
+          delete data.user.last_seen;
           setFormData((prevState) => ({
-            ...prevState, latitude: data.latitude, longitude: data.longitude
+            ...prevState,
+            ...data.user,
+            date_of_birth: formattedDate,
+            initialized: 1,
           }));
-        }).catch((error) => {
-          console.error(error, error.message)
-        });
-      }, {timeout:5000});
-    } catch (error) {
+          setId(data.user.id);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [navigate]);
+
+  const syncLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { latitude, longitude } = position.coords;
+      setFormData((prevState) => ({
+        ...prevState, latitude, longitude
+      }));
+    }, () => {
       fetch('https://geolocation-db.com/json/')
       .then((response) => response.json())
       .then((data) => {
@@ -71,11 +61,10 @@ const OnBoarding = () => {
           ...prevState, latitude: data.latitude, longitude: data.longitude
         }));
       }).catch((error) => {
-        console.error(error, error.message)
+        console.error(error)
       });
-    }
-  }, [navigate]);
-
+    }, {timeout:5000});
+  }
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -95,10 +84,10 @@ const OnBoarding = () => {
     }
 
     sendHttp(`/user/${id}`, "PUT", body, {})
-      .then(() => {
-        navigate("/dashboard");
-      }).catch(() => {
-          setSubmitInfo("An error occured, please try again");
+      .then((data) => {
+        sendNotification("User updated", "success");
+      }).catch((error) => {
+        sendNotification("Could not update Profile", "error");
       })
   }
 
@@ -127,11 +116,22 @@ const OnBoarding = () => {
 
   return (
     <>
-      <Nav minimal={true} setShowModal={() => {}} showModal={false} />
       <div className="onboarding">
-        <h2>Create account</h2>
         <form onSubmit={handleSubmit}>
           <section>
+            <div>
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="text"
+                name="email"
+                placeholder="email"
+                required={true}
+                value={formData.email ?? ''}
+                onChange={handleChange}
+              />
+            </div>
+
             <div>
               <label htmlFor="first_name">First name</label>
               <input
@@ -273,9 +273,10 @@ const OnBoarding = () => {
               })
             }
           </section>
-          {submitInfo}
-          <button type="submit" className="primary-button">Submit</button>
-          <br/>
+          <section>
+            <button type="submit" className="primary-button">Submit</button>
+            <button type="button" className="primary-button" onClick={syncLocation}>Sync location</button>
+          </section>
         </form>
       </div>
     </>

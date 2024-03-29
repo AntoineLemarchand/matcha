@@ -1,49 +1,65 @@
-version: "3"
+networks:
+  backend:
+  frontend:
+
 services:
-  client:
+  proxy:
+    restart: unless-stopped
     env_file:
       - .env
     build:
       context: .
+      dockerfile: ./proxy/DockerFile
+    container_name: proxy
+    volumes:
+      - ./certs/:/etc/nginx/ssl
+    ports:
+      - "${SERVER_PORT}:443"
+    networks:
+      - frontend
+  client:
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - REACT_APP_API_URL=https://${SERVER_URL}:${SERVER_PORT}/api
+      - REACT_APP_WS_URL=wss://${SERVER_URL}:${SERVER_PORT}/api
+    build:
+      context: .
       dockerfile: ./client/docker/Dockerfile
     container_name: client
-    ports:
-      - ${CLIENT_PORT}:${CLIENT_PORT}
+    networks:
+      - frontend
     volumes:
-      - "./client/src:/app/src"
-      - "./client/public:/app/public"
-    environment:
-      - NODE_ENV=${NODE_ENV}
+      - ./client/:/app/
+      - /app/node_modules
     depends_on:
       - server
 
   server:
+    restart: unless-stopped
     env_file: 
       - .env
     build:
       context: .
       dockerfile: ./server/docker/Dockerfile
     container_name: server
-    ports:
-      - ${SERVER_PORT}:${SERVER_PORT}
+    networks:
+      - frontend
+      - backend
     volumes:
-      - "./server/src:/app/src"
-      - "./server/index.js:/app/index.js"
-    environment:
-      - NODE_ENV=${NODE_ENV}
+      - ./server/:/app/
+      - /app/node_modules
     depends_on:
       - db
-
   db:
+    restart: unless-stopped
     env_file: 
       - .env
-    image: mongo:latest
+    image: mariadb:latest
     container_name: db
-    restart: always
+    networks:
+      - backend
     volumes:
       - "./db:/data/db"
       - "./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}

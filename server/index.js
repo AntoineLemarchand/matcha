@@ -1,34 +1,46 @@
-//require("dotenv").config();
-const express = require("express");
-const { MongoClient } = require("mongodb");
-//const uri = process.env.DB_URI
-const uri = "mongodb://localhost:27017";
+import express from 'express';
+import cors from 'cors';
+import userRouter from './src/user/user.router.js';
+import authRouter from './src/auth/auth.router.js';
+import initTables from './db/init-db.js';
+import cookies from 'cookie-parser';
+import http from 'http';
+import setupWss from './src/wss.js';
 
 const app = express();
+const server = http.createServer(app);
+const apiRouter = express.Router();
 
-app.get("/", (req, res) => {
-    res.json("Hello World");
+app.use(cors({
+  origin: `https://${process.env.SERVER_URL}:${process.env.SERVER_PORT}`,
+  credentials: true,
+}));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true}));
+app.use(cookies());
+
+try {
+  initTables();
+} catch (err) {
+  console.log(err);
+}
+
+apiRouter.use("/user", userRouter);
+apiRouter.use("/auth", authRouter);
+
+apiRouter.get("/", (req, res) => {
+  res.json("Hello World");
 });
 
-app.post("/signup", (req, res) => {
-    res.json("Hello World");
+app.use('/api', apiRouter);
+app.use('/api/images', express.static('images'));
+
+app.use((err, req, res, next) => {
+  res.status(500).json({ message: err.message, stack: err.stack });
 });
 
-app.get("/users", async (req, res) => {
-    const client = new MongoClient(uri);
+setupWss(server);
 
-    try {
-        await client.connect();
-        const database = client.db("test");
-        const users = database.collection("user");
-
-        const returnedUsers = await users.find().toArray();
-        res.send(returnedUsers);
-    } finally {
-        await client.close();
-    }
-});
-
-app.listen(process.env.SERVER_PORT, () => {
-    console.log(`Server running on port ${process.env.SERVER_PORT}`);
+server.listen(3000, () => {
+  console.log(`[INFO] backend server running`);
 });
